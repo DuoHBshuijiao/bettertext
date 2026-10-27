@@ -5,7 +5,7 @@
 BetterText is a Compose library that replaces `BasicText` to improve rich markdown rendering, especially inline formulas and other inline components. The long-term plan is a text layer built on `BasicText`: inline content is measured first, one placeholder is created per unbreakable math chunk with U+200B between chunks so the line breaker can wrap long formulas, and baselines are corrected. That layer doesn't exist yet. Today the repo has:
 
 - `:latex`: a Kotlin port of the KaTeX 0.19.1 parser and HTML builder. It renders LaTeX inline and in display mode on an Android `Canvas` with the bundled KaTeX fonts.
-- `:app`: a demo gallery (`MainActivity`) showing sample formulas.
+- `:app`: a demo gallery built with Navigation 3. It has categorized samples, a wrapping and mixed-text demo, and a live editor. Samples live in `gallery/Samples.kt`, and `GallerySamplesTest` checks that they all parse.
 
 ## Commands
 

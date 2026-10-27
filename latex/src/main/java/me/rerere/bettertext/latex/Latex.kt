@@ -107,6 +107,18 @@ fun LatexBlock(
     macros: Map<String, String> = emptyMap(),
 ) {
     val layout = rememberLatexLayout(latex, LatexSettings(displayMode = true, macros = macros))
+    LatexBlock(layout, modifier, fontSize, color, scale)
+}
+
+/** Renders an already laid-out formula as a block that scrolls horizontally when too wide. */
+@Composable
+fun LatexBlock(
+    layout: LatexLayout,
+    modifier: Modifier = Modifier,
+    fontSize: TextUnit = 16.sp,
+    color: Color = Color.Black,
+    scale: Float = DefaultMathScale,
+) {
     BoxWithConstraints(modifier.fillMaxWidth()) {
         // At least as wide as the viewport, so the body is centered and the tag
         // sits at the edge; wider formulas scroll.
