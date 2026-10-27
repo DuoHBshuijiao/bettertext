@@ -19,6 +19,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://jitpack.io") {
+            content { includeGroup("com.github.rikkahub") }
+        }
     }
 }
 
@@ -26,3 +29,4 @@ rootProject.name = "bettertext"
 include(":app")
 include(":latex")
 include(":text")
+include(":markdown")
