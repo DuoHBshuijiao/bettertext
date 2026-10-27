@@ -170,7 +170,19 @@ internal class MathRenderer(private val typefaces: MathTypefaces) {
 
     companion object {
         private val pathCache = ConcurrentHashMap<String, Path>()
+        private val whitespace = Regex("\\s+")
 
-        fun parse(d: String): Path = pathCache.getOrPut(d) { PathParser.createPathFromPathData(d) }
+        /**
+         * Parses SVG path data. KaTeX's paths contain newlines, which browsers treat
+         * as separators but [PathParser] doesn't, so whitespace is normalized first.
+         * A path that still fails to parse draws nothing rather than crashing.
+         */
+        fun parse(d: String): Path = pathCache.getOrPut(d) {
+            try {
+                PathParser.createPathFromPathData(d.replace(whitespace, " "))
+            } catch (e: RuntimeException) {
+                Path()
+            }
+        }
     }
 }
