@@ -1,12 +1,12 @@
-package me.rerere.bettertext.gallery
+package me.rerere.bettertext.gallery.text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -16,7 +16,6 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +25,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -44,9 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
-import me.rerere.bettertext.components.Frame
-import me.rerere.bettertext.components.GalleryScaffold
-import me.rerere.bettertext.components.Heading
 import me.rerere.bettertext.latex.DefaultMathScale
 import me.rerere.bettertext.latex.Latex
 import me.rerere.bettertext.latex.LatexLayout
@@ -57,6 +52,9 @@ import me.rerere.bettertext.text.BetterSelectionContainer
 import me.rerere.bettertext.text.BetterText
 import me.rerere.bettertext.text.ComposableInline
 import me.rerere.bettertext.text.InlineAlign
+import me.rerere.bettertext.ui.components.Frame
+import me.rerere.bettertext.ui.components.Heading
+import me.rerere.bettertext.ui.components.SwitchItem
 
 private val citations = mapOf(
     1 to "issuetracker.google.com/issues/427657659 · The line height of the text does not take the font size into account",
@@ -65,7 +63,7 @@ private val citations = mapOf(
 
 /** BetterText paragraphs mixing text, math, color swatches and citations. */
 @Composable
-internal fun RichTextScreen(onBack: () -> Unit) {
+internal fun RichTextTab(contentPadding: PaddingValues) {
     var fraction by rememberSaveable { mutableFloatStateOf(1f) }
     var useLineHeight by rememberSaveable { mutableStateOf(true) }
     var cited by rememberSaveable { mutableIntStateOf(0) }
@@ -75,65 +73,61 @@ internal fun RichTextScreen(onBack: () -> Unit) {
         lineHeight = if (useLineHeight) bodyLarge.lineHeight else TextUnit.Unspecified,
     )
 
-    GalleryScaffold(title = "富文本", onBack = onBack) { padding ->
-        BoxWithConstraints(Modifier.fillMaxSize().padding(padding)) {
-            val width = (maxWidth - 32.dp) * fraction
-            Column(
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Text("容器宽度 ${width.value.roundToInt()} dp", style = MaterialTheme.typography.labelLarge)
-                Slider(value = fraction, onValueChange = { fraction = it }, valueRange = 0.3f..1f)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Text("使用 bodyLarge 行高（${bodyLarge.lineHeight}）")
-                        Text(
-                            "关闭后按字体的自然高度排版",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    Switch(checked = useLineHeight, onCheckedChange = { useLineHeight = it })
-                }
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val width = (maxWidth - 32.dp) * fraction
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(contentPadding)
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text("容器宽度 ${width.value.roundToInt()} dp", style = MaterialTheme.typography.labelLarge)
+            Slider(value = fraction, onValueChange = { fraction = it }, valueRange = 0.3f..1f)
+            SwitchItem(
+                title = "使用 bodyLarge 行高（${bodyLarge.lineHeight}）",
+                checked = useLineHeight,
+                onCheckedChange = { useLineHeight = it },
+                index = 0,
+                count = 1,
+                description = "关闭后按字体的自然高度排版",
+            )
 
-                Text(
-                    "长按选择文字，拖动可以跨段落选择；公式和引用整体选中，复制时输出源码",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                BetterSelectionContainer {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        for (sample in richTextSamples) {
-                            Heading(sample.title, sample.description)
-                            val (text, inlineContent) = rememberDemoText(sample.markup) { cited = it }
-                            Frame(width) { BetterText(text, Modifier.padding(4.dp), style = style, inlineContent = inlineContent) }
-                            if (sample.markup.contains("[^")) {
-                                Text(
-                                    citations[cited]?.let { "[$cited] $it" } ?: "点击引用标记查看来源",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                            if (sample.markup == TALL_PARAGRAPH) {
-                                Text(
-                                    "对比：Compose Text + Placeholder",
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.error,
-                                )
-                                Frame(width) { PlaceholderParagraph(TALL_PARAGRAPH, style, Modifier.padding(4.dp)) }
-                                Text(
-                                    "设置了 lineHeight 时高公式和上下行重叠；占位符只能居中，公式基线和文字基线对不齐",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
+            Text(
+                "长按选择文字，拖动可以跨段落选择；公式和引用整体选中，复制时输出源码",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            BetterSelectionContainer {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    for (sample in richTextSamples) {
+                        Heading(sample.title, sample.description)
+                        val (text, inlineContent) = rememberDemoText(sample.markup) { cited = it }
+                        Frame(width) { BetterText(text, Modifier.padding(4.dp), style = style, inlineContent = inlineContent) }
+                        if (sample.markup.contains("[^")) {
+                            Text(
+                                citations[cited]?.let { "[$cited] $it" } ?: "点击引用标记查看来源",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
                         }
-
-                        Heading("样式", "公式跟随所在位置的字号和颜色")
-                        StyledParagraph(width, style)
+                        if (sample.markup == TALL_PARAGRAPH) {
+                            Text(
+                                "对比：Compose Text + Placeholder",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                            Frame(width) { PlaceholderParagraph(TALL_PARAGRAPH, style, Modifier.padding(4.dp)) }
+                            Text(
+                                "设置了 lineHeight 时高公式和上下行重叠；占位符只能居中，公式基线和文字基线对不齐",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
+
+                    Heading("样式", "公式跟随所在位置的字号和颜色")
+                    StyledParagraph(width, style)
                 }
             }
         }

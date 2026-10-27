@@ -7,8 +7,8 @@ BetterText is a Compose library that replaces `BasicText` to improve rich markdo
 - `:latex`: a Kotlin port of the KaTeX 0.19.1 parser and HTML builder. It renders LaTeX inline and in display mode on an Android `Canvas` with the bundled KaTeX fonts.
 - `:text`: the `BetterText` composable and `BetterSelectionContainer`.
 - `:markdown`: parses Markdown (with math and embedded HTML) and renders it with `BetterText`. It doesn't depend on Material 3; apps register code blocks, tables, images and details blocks.
-- `:highlight`: a pure Kotlin syntax highlighter, ported from highlight.js 11.11.1 (30 languages). It turns code into an `AnnotatedString` for `BetterText`; the gallery's code block uses it.
-- `:app`: a demo gallery built with Navigation 3. It has categorized samples, a Markdown demo with simulated streaming, a rich text demo, a wrapping demo, and a live editor. Samples live in `gallery/Samples.kt`, and `GallerySamplesTest` checks that they all parse. `gallery/MaterialMarkdown.kt` shows how an app registers Markdown components and maps its theme.
+- `:highlight`: a pure Kotlin syntax highlighter, ported from highlight.js 11.11.1 (30 languages). It turns code into an `AnnotatedString` for `BetterText`; the gallery's code blocks and highlight tab use it.
+- `:app`: a demo gallery in Material 3 Expressive, built with Navigation 3. The home screen has one tab per library module (LaTeX, rich text, Markdown, highlighting), and code lives in a matching package under `gallery/` (`latex`, `text`, `markdown`, `highlight`), with shared UI in `ui/components`. Each package keeps its samples in its own `*Samples.kt`, and `GallerySamplesTest` checks that they all parse. `gallery/markdown/MaterialMarkdown.kt` shows how an app registers Markdown components and maps its theme.
 
 ## Commands
 
@@ -60,7 +60,7 @@ KaTeX leaves widths and horizontal layout to the browser's CSS. This port comput
 
 ## Architecture of `:text`
 
-Package: `me.rerere.bettertext.text`. Only the inline expansion is unit-tested; layout needs a device, so check changes in the gallery's rich text screen.
+Package: `me.rerere.bettertext.text`. Only the inline expansion is unit-tested; layout needs a device, so check changes in the gallery's rich text tab.
 
 1. **Inline items**: `appendInline(id, altText)` marks alt text with a string annotation; `inlineContent` maps ids to a `BetterInline`. A `DrawnInline` (`LatexInline`, or a custom one such as the gallery's `ColorSwatch`) is measured and drawn with the paint of the surrounding text, so it follows its size and color, and may have several segments (one per LaTeX chunk) with line breaks allowed between them. A `ComposableInline` (e.g. a citation tag) is measured as a child of the `Layout` and placed over its span.
 2. **Prepare** (`TextLayout.kt`, `PreparedText`): `expandInlines` replaces each item's alt text with one U+FFFC per segment and maps the original offsets. `SpanStyle`s become Android spans. Font attributes are flattened into one resolved typeface per range, as Compose does. Inline items become `ReplacementSpan`s that report their exact ascent/descent.

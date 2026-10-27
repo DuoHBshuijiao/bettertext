@@ -1,9 +1,8 @@
-package me.rerere.bettertext.gallery
+package me.rerere.bettertext.gallery.latex
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -15,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,7 +22,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
@@ -33,11 +30,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.roundToInt
-import me.rerere.bettertext.components.GalleryScaffold
 import me.rerere.bettertext.latex.Latex
 import me.rerere.bettertext.latex.LatexBlock
 import me.rerere.bettertext.latex.LatexSettings
 import me.rerere.bettertext.latex.rememberLatexLayout
+import me.rerere.bettertext.ui.components.GalleryScaffold
+import me.rerere.bettertext.ui.components.SegmentedGroup
+import me.rerere.bettertext.ui.components.SwitchItem
 
 private const val DEFAULT_LATEX = """f(x) = \int_{-\infty}^\infty \hat f(\xi)\,e^{2 \pi i \xi x} \,d\xi"""
 
@@ -47,10 +46,9 @@ private val snippets = listOf(
     """\alpha""", """\infty""", """\tag{}""",
 )
 
-/** Edits a formula and previews it live. */
+/** Edits a formula, prefilled with [initial] when set, and previews it live. */
 @Composable
-internal fun PlaygroundScreen(route: PlaygroundRoute, onBack: () -> Unit) {
-    val initial = route.initial
+internal fun PlaygroundScreen(initial: Sample?, onBack: () -> Unit) {
     var text by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         val latex = initial?.latex ?: DEFAULT_LATEX
         mutableStateOf(TextFieldValue(latex, TextRange(latex.length)))
@@ -76,10 +74,10 @@ internal fun PlaygroundScreen(route: PlaygroundRoute, onBack: () -> Unit) {
         ) {
             Surface(
                 Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
+                shape = MaterialTheme.shapes.extraLarge,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh,
             ) {
-                Column(Modifier.padding(16.dp)) {
+                Column(Modifier.padding(20.dp)) {
                     val color = MaterialTheme.colorScheme.onSurface
                     if (display) {
                         LatexBlock(layout, fontSize = fontSize.sp, color = color)
@@ -124,20 +122,14 @@ internal fun PlaygroundScreen(route: PlaygroundRoute, onBack: () -> Unit) {
                 )
             }
 
-            Toggle("块级（display mode）", display) { display = it }
-            Toggle("编号在左（leqno）", leqno) { leqno = it }
-            Toggle("左对齐（fleqn）", fleqn) { fleqn = it }
+            SegmentedGroup {
+                SwitchItem("块级", display, { display = it }, index = 0, count = 3, description = "display mode")
+                SwitchItem("编号在左", leqno, { leqno = it }, index = 1, count = 3, description = "leqno")
+                SwitchItem("左对齐", fleqn, { fleqn = it }, index = 2, count = 3, description = "fleqn")
+            }
             Text("字号 ${fontSize.roundToInt()} sp", style = MaterialTheme.typography.labelLarge)
             Slider(value = fontSize, onValueChange = { fontSize = it }, valueRange = 10f..40f)
         }
-    }
-}
-
-@Composable
-private fun Toggle(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(label, Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = onChange)
     }
 }
 

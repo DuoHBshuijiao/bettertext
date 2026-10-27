@@ -1,11 +1,10 @@
-package me.rerere.bettertext.gallery
+package me.rerere.bettertext.gallery.latex
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,19 +22,19 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
-import me.rerere.bettertext.components.Frame
-import me.rerere.bettertext.components.GalleryScaffold
-import me.rerere.bettertext.components.Heading
 import me.rerere.bettertext.latex.Latex
 import me.rerere.bettertext.latex.LatexChunk
 import me.rerere.bettertext.latex.LatexSettings
 import me.rerere.bettertext.latex.rememberLatexLayout
+import me.rerere.bettertext.ui.components.Frame
+import me.rerere.bettertext.ui.components.GalleryScaffold
+import me.rerere.bettertext.ui.components.Heading
+import me.rerere.bettertext.ui.components.SwitchItem
 
 /** Shows how formulas break into lines as the available width changes. */
 @Composable
@@ -73,10 +71,7 @@ internal fun WrappingScreen(onBack: () -> Unit) {
                 ChunkFlow(latex, width, fontSize)
 
                 Heading("块级公式与编号", "放不下时编号移到下一行；leqno 时编号在左侧，移到上一行")
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("leqno", Modifier.weight(1f))
-                    Switch(checked = leqno, onCheckedChange = { leqno = it })
-                }
+                SwitchItem("编号在左", leqno, { leqno = it }, index = 0, count = 1, description = "leqno")
                 val tagged = rememberLatexLayout(TAGGED_DISPLAY, LatexSettings(displayMode = true, leqno = leqno))
                 Frame(width) {
                     Latex(tagged, Modifier.fillMaxWidth(), fontSize = fontSize, color = MaterialTheme.colorScheme.onSurface)

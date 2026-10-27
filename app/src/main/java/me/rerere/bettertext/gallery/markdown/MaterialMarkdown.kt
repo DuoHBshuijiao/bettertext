@@ -1,4 +1,4 @@
-package me.rerere.bettertext.components
+package me.rerere.bettertext.gallery.markdown
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -44,14 +43,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import me.rerere.bettertext.highlight.CODE_FONT_FEATURES
-import me.rerere.bettertext.highlight.HighlightTextColorPalette
-import me.rerere.bettertext.highlight.rememberHighlightedCode
+import me.rerere.bettertext.gallery.highlight.CodeCard
 import me.rerere.bettertext.markdown.MarkdownBlock
 import me.rerere.bettertext.markdown.MarkdownComponents
 import me.rerere.bettertext.markdown.MarkdownInlineContent
 import me.rerere.bettertext.markdown.MarkdownTheme
-import me.rerere.bettertext.text.BetterText
 
 /** The Markdown theme in Material 3 colors. */
 @Composable
@@ -70,38 +66,11 @@ internal fun rememberMaterialMarkdownTheme(): MarkdownTheme {
 
 /** Components an app registers, here built with Material 3. */
 internal val materialMarkdownComponents = MarkdownComponents(
-    codeBlock = { CodeBlock(it) },
+    codeBlock = { CodeCard(it.code, it.language) },
     table = { MaterialTable(it) },
     image = { image, _ -> ImagePlaceholder(image.alt ?: image.url) },
     details = { block, summary, content -> CollapsibleDetails(block.open, summary, content) },
 )
-
-@Composable
-private fun CodeBlock(block: MarkdownBlock.CodeBlock) {
-    val background = MaterialTheme.colorScheme.surfaceContainerHigh
-    val colors = if (background.luminance() < 0.5f) HighlightTextColorPalette.AtomOneDark else HighlightTextColorPalette.AtomOneLight
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = background,
-    ) {
-        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            block.language?.let {
-                Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            // BetterText, not Text, so the code can be selected along with the rest of the reply.
-            BetterText(
-                text = rememberHighlightedCode(block.code, block.language.orEmpty(), colors),
-                modifier = Modifier.horizontalScroll(rememberScrollState()),
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = colors.fallback,
-                    fontFamily = FontFamily.Monospace,
-                    fontFeatureSettings = CODE_FONT_FEATURES,
-                ),
-            )
-        }
-    }
-}
 
 @Composable
 private fun ImagePlaceholder(label: String) {

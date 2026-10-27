@@ -1,4 +1,4 @@
-package me.rerere.bettertext.components
+package me.rerere.bettertext.gallery.text
 
 import android.graphics.Canvas
 import android.graphics.Paint
