@@ -2,7 +2,7 @@
 
 [English](README.md) · **简体中文**
 
-[![JitPack](https://jitpack.io/v/re-ovo/bettertext.svg)](https://jitpack.io/#re-ovo/bettertext)
+[![CI](https://github.com/re-ovo/bettertext/actions/workflows/ci.yml/badge.svg)](https://github.com/re-ovo/bettertext/actions/workflows/ci.yml) [![JitPack](https://jitpack.io/v/re-ovo/bettertext.svg)](https://jitpack.io/#re-ovo/bettertext)
 
 ![BetterText 渲染带公式和代码高亮的 Markdown](docs/banner.zh.webp)
 
