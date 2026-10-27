@@ -9,6 +9,7 @@ Compose's `Text` makes inline formulas and other inline components awkward, and 
 - **`:latex`**: ready. A Kotlin port of KaTeX 0.19.1's parser and layout engine that draws on an Android `Canvas` with the bundled KaTeX fonts. It supports KaTeX's functions, environments, macros and symbols, except `\includegraphics` and `CD`.
 - **`:text`**: in progress. `BetterText` lays out text with inline formulas, custom drawn items and composables such as citation tags; lines grow to fit tall items. Because of the [Compose limitations](#compose-limitations) below, it lays out text itself; `BetterSelectionContainer` selects across paragraphs and copies formulas as their LaTeX source.
 - **`:markdown`**: renders Markdown (GFM, math, embedded HTML) with `BetterText`, parsing streamed replies incrementally. Apps register code blocks, tables, images and details blocks; it doesn't depend on Material 3.
+- **`:highlight`**: syntax highlighting for code blocks, a pure Kotlin port of highlight.js 11.11.1 covering 30 languages. It produces an `AnnotatedString`, so highlighted code can be selected with the rest of a reply.
 - **`:app`**: a demo gallery with categorized samples, a Markdown demo, a rich text demo, a line-wrapping demo and a live editor.
 
 ## Usage

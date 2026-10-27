@@ -7,6 +7,7 @@ BetterText is a Compose library that replaces `BasicText` to improve rich markdo
 - `:latex`: a Kotlin port of the KaTeX 0.19.1 parser and HTML builder. It renders LaTeX inline and in display mode on an Android `Canvas` with the bundled KaTeX fonts.
 - `:text`: the `BetterText` composable and `BetterSelectionContainer`.
 - `:markdown`: parses Markdown (with math and embedded HTML) and renders it with `BetterText`. It doesn't depend on Material 3; apps register code blocks, tables, images and details blocks.
+- `:highlight`: a pure Kotlin syntax highlighter, ported from highlight.js 11.11.1 (30 languages). It turns code into an `AnnotatedString` for `BetterText`; the gallery's code block uses it.
 - `:app`: a demo gallery built with Navigation 3. It has categorized samples, a Markdown demo with simulated streaming, a rich text demo, a wrapping demo, and a live editor. Samples live in `gallery/Samples.kt`, and `GallerySamplesTest` checks that they all parse. `gallery/MaterialMarkdown.kt` shows how an app registers Markdown components and maps its theme.
 
 ## Commands
@@ -17,6 +18,7 @@ BetterText is a Compose library that replaces `BasicText` to improve rich markdo
 ./gradlew :latex:testDebugUnitTest --tests '*MiscTest*'   # one class (append .methodName for one test)
 ./gradlew :text:testDebugUnitTest                         # text layer unit tests
 ./gradlew :markdown:testDebugUnitTest                     # Markdown parser tests
+./gradlew :highlight:testDebugUnitTest                    # highlighter tests, including highlight.js parity
 ./gradlew :app:installDebug                               # install the demo on a device/emulator
 ```
 
@@ -74,3 +76,11 @@ Package: `me.rerere.bettertext.markdown`. Ported from RikkaHub's `ui/markdown`, 
 2. **Streaming** (`MarkdownStreamParser`): splits the top-level blocks into chunks, never across an open HTML element or next to an HTML block, and on the next call reparses only from two chunks before where the text changed. `MarkdownStreamParserTest` checks that every prefix of a document parses the same as `parseMarkdown`; keep that test passing when changing the parser. With `streaming = true`, `StreamingEnd.kt` hides or closes unfinished syntax in the last block (`**bold`, `$\frac{`, `[text](https://exa`, a table header without its delimiter row), working from the parse tree so code isn't touched.
 3. **Render** (`Markdown.kt`, `MarkdownBlocks.kt`, `MarkdownInline.kt`): paragraphs, headings, lists, quotes and formulas are drawn with `BetterText`, `LatexInline` and `LatexBlock`. Everything else comes from `MarkdownComponents`, with plain fallbacks. Text style flows through `LocalMarkdownTextStyle`, not Material's `LocalTextStyle`. Nodes are immutable data classes, so blocks that didn't change skip recomposition.
 
+## Architecture of `:highlight`
+
+Package: `me.rerere.bettertext.highlight`. Moved from RikkaHub's `:highlight` module; its Material `CodeHighlightText` was replaced by `rememberHighlightedCode`, which returns an `AnnotatedString`.
+
+- **Engine** (`core/`): `HighlightEngine` ports highlight.js's mode-stack parser (`_highlight()`), `ModeCompiler` its mode compilation, and `MultiRegex` its terminator matcher. A language is compiled the first time it's used. Compiled modes keep matcher state, so a `CodeHighlighter` must not be used from two threads at once.
+- **Grammars** (`languages/`): one file per highlight.js language, registered in `Languages.kt`. Port a new one from the highlight.js source, then add it to `tools/languages.mjs` and add fixtures.
+- **Tokens and colors**: `HighlightToken` carries highlight.js scopes such as `title.function`; `HighlightStyle.kt` maps them to a `HighlightTextColorPalette` (Atom One Dark and Light), falling back to the parent scope.
+- **Tests**: `LanguageFixtureTest` checks every language against token streams from highlight.js itself, in `src/test/resources/hljs/<language>/` (`<name>.txt` and `<name>.tokens`). After adding or changing a fixture source, regenerate the tokens with `cd highlight/tools && npm install && npm run generate`; don't edit `.tokens` files by hand.
