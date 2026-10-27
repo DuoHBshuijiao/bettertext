@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.mapNotNull
  * Renders Markdown: GFM (tables, task lists, strikethrough), LaTeX formulas and embedded HTML.
  *
  * Text is drawn with `BetterText`, so wrap the message in a `BetterSelectionContainer`
- * to make it selectable. Code blocks, tables, images and details blocks are
+ * to make it selectable. Code blocks, formulas, tables, images and details blocks are
  * registered by the app through [components]; visual parameters go in [theme].
  * [style] is the body text style, including its color. [content] may change often while
  * a reply streams in: it is parsed in the background, reusing the unchanged

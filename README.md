@@ -13,7 +13,7 @@ Compose's Text handles this poorly. Inline content must fit a fixed-size placeho
 - **Inline math that wraps like KaTeX.** A Kotlin port of KaTeX 0.19.1 draws formulas with the KaTeX fonts and supports its functions, environments, macros and symbols. A long inline formula breaks after relations and binary operators, as in a browser.
 - **Text with inline content.** Formulas, custom drawn items and composables such as citation tags sit in the text on its baseline. Lines grow to fit tall items instead of overlapping their neighbors.
 - **Streaming Markdown.** Markdown with GFM, math and embedded HTML renders as a reply streams in. Only the changed end is parsed again, and unfinished syntax such as an unclosed bold or formula is closed or hidden instead of flashing as raw text.
-- **Components from your app.** Code blocks, tables, images and details blocks come from the app, so the library doesn't depend on Material 3.
+- **Components from your app.** Code blocks, formulas, tables, images and details blocks come from the app, so Markdown doesn't depend on Material 3, and apps without math don't ship KaTeX.
 - **Syntax highlighting.** A Kotlin port of highlight.js 11.11.1 highlights 30 languages.
 
 ## Installation
@@ -35,11 +35,23 @@ Then add the BOM, with a release tag or a commit hash as the version, and the mo
 ```kotlin
 dependencies {
     implementation(platform("com.github.re-ovo.bettertext:bom:<version>"))
-    implementation("com.github.re-ovo.bettertext:markdown")  // Markdown, includes text and latex
-    implementation("com.github.re-ovo.bettertext:text")      // BetterText and selection, includes latex
-    implementation("com.github.re-ovo.bettertext:latex")     // LaTeX only
+    implementation("com.github.re-ovo.bettertext:text")      // BetterText and selection
+    implementation("com.github.re-ovo.bettertext:latex")     // formulas, includes text
+    implementation("com.github.re-ovo.bettertext:markdown")  // Markdown, includes text
     implementation("com.github.re-ovo.bettertext:highlight") // syntax highlighting
 }
+```
+
+Markdown shows formulas as source until the app registers the latex module's renderers, the same way it registers code blocks:
+
+```kotlin
+val components = MarkdownComponents(
+    inlineMath = { formula -> LatexInline.cached(formula, context) },
+    mathBlock = { formula ->
+        val style = LocalMarkdownTextStyle.current
+        LatexBlock(formula, fontSize = style.fontSize, color = style.color)
+    },
+)
 ```
 
 ## Compose limitations

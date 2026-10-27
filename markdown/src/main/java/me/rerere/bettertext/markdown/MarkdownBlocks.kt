@@ -157,7 +157,7 @@ private fun TextAlign.toHorizontalAlignment() = when (this) {
 @Composable
 private fun MathBlock(formula: String) {
     val component = LocalMarkdownContext.current.components.mathBlock
-    if (component != null) component(formula) else MarkdownDefaults.MathBlock(formula)
+    if (component != null) component(formula) else SourceText(formula)
 }
 
 /** The registered image component, or the alt text linking to the image. */

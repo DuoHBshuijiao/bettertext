@@ -13,7 +13,7 @@ Compose 的 Text 处理不好这些内容。行内内容只能放进固定尺寸
 - **像 KaTeX 一样折行的行内公式。** KaTeX 0.19.1 的 Kotlin 移植，用 KaTeX 字体绘制公式，支持它的函数、环境、宏和符号。长的行内公式会在关系符和二元运算符后面折行，和浏览器里一样。
 - **带行内内容的文字。** 公式、自定义绘制的内容，以及引用标记这类组件，都对齐文字基线排在行内。遇到高的内容，行会长高，而不是和相邻的行重叠。
 - **流式 Markdown。** 支持 GFM、公式和内嵌 HTML，回复一边输出一边渲染。每次只重新解析变化的末尾；没写完的语法，比如没闭合的加粗或公式，会被补全或隐藏，不会先闪一下原文。
-- **组件由应用提供。** 代码块、表格、图片和折叠块由应用注册，所以库本身不依赖 Material 3。
+- **组件由应用提供。** 代码块、公式、表格、图片和折叠块由应用注册，所以 Markdown 不依赖 Material 3，不需要公式的应用也不用打包 KaTeX。
 - **代码高亮。** highlight.js 11.11.1 的 Kotlin 移植，支持 30 种语言。
 
 ## 安装
@@ -35,11 +35,23 @@ dependencyResolutionManagement {
 ```kotlin
 dependencies {
     implementation(platform("com.github.re-ovo.bettertext:bom:<version>"))
-    implementation("com.github.re-ovo.bettertext:markdown")  // Markdown，包含 text 和 latex
-    implementation("com.github.re-ovo.bettertext:text")      // BetterText 和文字选择，包含 latex
-    implementation("com.github.re-ovo.bettertext:latex")     // 只用 LaTeX
+    implementation("com.github.re-ovo.bettertext:text")      // BetterText 和文字选择
+    implementation("com.github.re-ovo.bettertext:latex")     // 公式，包含 text
+    implementation("com.github.re-ovo.bettertext:markdown")  // Markdown，包含 text
     implementation("com.github.re-ovo.bettertext:highlight") // 代码高亮
 }
+```
+
+Markdown 里的公式默认显示源码，应用要像注册代码块一样，注册 latex 模块的渲染：
+
+```kotlin
+val components = MarkdownComponents(
+    inlineMath = { formula -> LatexInline.cached(formula, context) },
+    mathBlock = { formula ->
+        val style = LocalMarkdownTextStyle.current
+        LatexBlock(formula, fontSize = style.fontSize, color = style.color)
+    },
+)
 ```
 
 ## Compose 的限制

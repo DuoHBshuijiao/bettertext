@@ -1,10 +1,9 @@
 package me.rerere.bettertext.markdown
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -14,7 +13,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import me.rerere.bettertext.latex.LatexBlock
 import me.rerere.bettertext.text.BetterInline
 
 /**
@@ -48,13 +46,17 @@ class MarkdownInlineScope(
     val style: TextStyle,
     val density: Density,
     val contentColor: Color,
+    /** The Android context, e.g. to load fonts. */
+    val context: Context,
 )
 
 /**
- * Components registered by the app. The module draws text, lists, quotes and
- * formulas itself; everything else is up to the app, with a plain fallback
- * when a slot is null: code and tables show their source, images their alt
- * text, and details blocks their whole content.
+ * Components registered by the app. The module draws text, lists and quotes
+ * itself; everything else is up to the app, with a plain fallback when a slot
+ * is null: code, formulas and tables show their source, images their alt
+ * text, and details blocks their whole content. The latex module draws
+ * formulas, see [inlineMath] and [mathBlock]. Components can match the
+ * surrounding text through [LocalMarkdownTextStyle].
  *
  * Keep instances stable (a top-level value or remembered), or every
  * recomposition rebuilds all the text.
@@ -65,7 +67,7 @@ class MarkdownComponents(
     val table: (@Composable (table: MarkdownBlock.Table) -> Unit)? = null,
     /** [link] is set when the image is wrapped in a link. */
     val image: (@Composable (image: MarkdownInline.Image, link: String?) -> Unit)? = null,
-    /** Display formulas; null draws them with [MarkdownDefaults.MathBlock]. */
+    /** Display formulas; null shows their source. */
     val mathBlock: (@Composable (formula: String) -> Unit)? = null,
     /**
      * `<details>` blocks. [summary] and [content] render the parts, so the
@@ -74,8 +76,11 @@ class MarkdownComponents(
     val details: (
         @Composable (block: MarkdownBlock.Details, summary: @Composable () -> Unit, content: @Composable () -> Unit) -> Unit
     )? = null,
-    /** Draw inline formulas; when false they show as monospace source. */
-    val inlineMath: Boolean = true,
+    /**
+     * Inline formulas, as items drawn in the text, such as `LatexInline.cached(formula, context)`
+     * from the latex module; null, or returning null, shows their source in monospace.
+     */
+    val inlineMath: (MarkdownInlineScope.(formula: String) -> BetterInline?)? = null,
     /** Renders some links differently, e.g. as citation tags; null renders a normal link. */
     val inlineLink: (MarkdownInlineScope.(link: MarkdownInline.Link) -> BetterInline?)? = null,
 )
@@ -83,16 +88,4 @@ class MarkdownComponents(
 object MarkdownDefaults {
     val theme = MarkdownTheme()
     val components = MarkdownComponents()
-
-    /** A display formula in the current text size and color, scrolling horizontally when too wide. */
-    @Composable
-    fun MathBlock(formula: String, modifier: Modifier = Modifier) {
-        val style = LocalMarkdownTextStyle.current
-        LatexBlock(
-            latex = formula,
-            modifier = modifier,
-            fontSize = style.fontSize,
-            color = style.color.takeOrElse { Color.Black },
-        )
-    }
 }

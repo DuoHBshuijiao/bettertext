@@ -7,12 +7,12 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import me.rerere.bettertext.latex.LatexInline
 import me.rerere.bettertext.latex.LatexLayout
 import me.rerere.bettertext.latex.LatexPainter
 import me.rerere.bettertext.latex.LatexSettings
 import me.rerere.bettertext.text.BetterInline
 import me.rerere.bettertext.text.ComposableInline
-import me.rerere.bettertext.text.LatexInline
 import me.rerere.bettertext.text.appendInline
 
 /**

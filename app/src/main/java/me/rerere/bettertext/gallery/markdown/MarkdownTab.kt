@@ -86,7 +86,7 @@ internal fun MarkdownTab(contentPadding: PaddingValues, onNavigate: (NavKey) -> 
                 onCheckedChange = { registered = it },
                 index = 0,
                 count = 2,
-                description = "代码块、表格、图片和折叠块由应用注册；关闭后显示库的兜底效果",
+                description = "代码块、公式、表格、图片和折叠块由应用注册；关闭后显示库的兜底效果",
             )
             SwitchItem(
                 title = "流式时处理未完成的语法",

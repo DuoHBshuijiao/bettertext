@@ -44,8 +44,11 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import me.rerere.bettertext.gallery.highlight.CodeCard
+import me.rerere.bettertext.latex.LatexBlock
+import me.rerere.bettertext.latex.LatexInline
 import me.rerere.bettertext.markdown.MarkdownBlock
 import me.rerere.bettertext.markdown.MarkdownComponents
+import me.rerere.bettertext.markdown.LocalMarkdownTextStyle
 import me.rerere.bettertext.markdown.MarkdownInlineContent
 import me.rerere.bettertext.markdown.MarkdownTheme
 
@@ -67,10 +70,19 @@ internal fun rememberMaterialMarkdownTheme(): MarkdownTheme {
 /** Components an app registers, here built with Material 3. */
 internal val materialMarkdownComponents = MarkdownComponents(
     codeBlock = { CodeCard(it.code, it.language) },
+    inlineMath = { LatexInline.cached(it, context) },
+    mathBlock = { MathBlock(it) },
     table = { MaterialTable(it) },
     image = { image, _ -> ImagePlaceholder(image.alt ?: image.url) },
     details = { block, summary, content -> CollapsibleDetails(block.open, summary, content) },
 )
+
+/** A display formula in the size and color of the surrounding text. */
+@Composable
+private fun MathBlock(formula: String) {
+    val style = LocalMarkdownTextStyle.current
+    LatexBlock(formula, fontSize = style.fontSize, color = style.color)
+}
 
 @Composable
 private fun ImagePlaceholder(label: String) {
