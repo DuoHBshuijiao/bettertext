@@ -68,7 +68,7 @@ internal fun HomeScreen(onNavigate: (NavKey) -> Unit) {
             when (tab) {
                 HomeTab.Latex -> LatexTab(padding, onNavigate)
                 HomeTab.RichText -> RichTextTab(padding)
-                HomeTab.Markdown -> MarkdownTab(padding)
+                HomeTab.Markdown -> MarkdownTab(padding, onNavigate)
                 HomeTab.Highlight -> HighlightTab(padding)
             }
         }

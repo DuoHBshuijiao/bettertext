@@ -51,3 +51,49 @@ fun solve(a: Double, b: Double, c: Double): List<Double> {
 
 <span style="color: #e53935">HTML 里的颜色</span>和 <u>下划线</u> 也能正常显示。
 """.trimIndent()
+
+/** A message of the long conversation demo; user messages are plain text, replies are Markdown. */
+internal class ChatMessage(val fromUser: Boolean, val text: String)
+
+private val chatRounds = listOf(
+    "一元二次方程怎么解？" to MARKDOWN_SAMPLE,
+    "用 Python 写一个快速排序" to $$"""
+        选一个基准值，把小于它的放左边、大于它的放右边，再分别递归：
+
+        ```python
+        def quick_sort(items: list[int]) -> list[int]:
+            if len(items) <= 1:
+                return items
+            pivot, *rest = items
+            left = [x for x in rest if x < pivot]
+            right = [x for x in rest if x >= pivot]
+            return quick_sort(left) + [pivot] + quick_sort(right)
+        ```
+
+        平均时间复杂度是 $O(n \log n)$，最坏情况（每次都选到最值）退化为 $O(n^2)$。
+    """.trimIndent(),
+    "常见排序算法的复杂度对比一下" to $$"""
+        | 算法 | 平均 | 最坏 | 稳定 |
+        |:--|:-:|:-:|:-:|
+        | 快速排序 | $O(n \log n)$ | $O(n^2)$ | 否 |
+        | 归并排序 | $O(n \log n)$ | $O(n \log n)$ | 是 |
+        | 堆排序 | $O(n \log n)$ | $O(n \log n)$ | 否 |
+        | 插入排序 | $O(n^2)$ | $O(n^2)$ | 是 |
+
+        数据量小或者基本有序时，**插入排序**反而更快，很多库的排序在小区间里会切换到它。
+    """.trimIndent(),
+    "解释一下欧拉公式" to $$"""
+        欧拉公式把指数函数和三角函数联系起来：
+
+        $$
+        e^{i\theta} = \cos\theta + i\sin\theta
+        $$
+
+        取 $\theta = \pi$ 就得到欧拉恒等式 $e^{i\pi} + 1 = 0$，它把 $e$、$i$、$\pi$、$1$ 和 $0$ 放进了同一个式子。
+    """.trimIndent(),
+)
+
+/** A few rounds of questions and replies, repeated so the list needs scrolling. */
+internal val chatMessages: List<ChatMessage> = List(3) { chatRounds }.flatten().flatMap { (question, reply) ->
+    listOf(ChatMessage(fromUser = true, text = question), ChatMessage(fromUser = false, text = reply))
+}

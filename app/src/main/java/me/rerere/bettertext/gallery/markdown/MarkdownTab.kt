@@ -11,8 +11,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,8 +25,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavKey
 import kotlinx.coroutines.delay
+import me.rerere.bettertext.R
+import me.rerere.bettertext.gallery.ChatRoute
 import me.rerere.bettertext.markdown.Markdown
 import me.rerere.bettertext.markdown.MarkdownDefaults
 import me.rerere.bettertext.text.BetterSelectionContainer
@@ -32,7 +39,7 @@ import me.rerere.bettertext.ui.components.SwitchItem
 
 /** Renders a chat-style reply with the Markdown module, optionally streaming it in. */
 @Composable
-internal fun MarkdownTab(contentPadding: PaddingValues) {
+internal fun MarkdownTab(contentPadding: PaddingValues, onNavigate: (NavKey) -> Unit) {
     var shown by rememberSaveable { mutableIntStateOf(MARKDOWN_SAMPLE.length) }
     var streaming by rememberSaveable { mutableStateOf(false) }
     var registered by rememberSaveable { mutableStateOf(true) }
@@ -90,12 +97,20 @@ internal fun MarkdownTab(contentPadding: PaddingValues) {
                 description = "隐藏或补全末尾没写完的公式、加粗、链接等；关闭后它们会先显示成原文",
             )
         }
+        SegmentedListItem(
+            onClick = { onNavigate(ChatRoute) },
+            shapes = ListItemDefaults.segmentedShapes(index = 0, count = 1),
+            supportingContent = { Text("多轮对话放在 LazyColumn 里，选择可以跨消息，拖到边缘自动滚动") },
+            trailingContent = { Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = null) },
+        ) {
+            Text("长对话选择")
+        }
         Text(
             "${shown} / ${MARKDOWN_SAMPLE.length} 字符 · 长按可以跨块选择，公式复制为 LaTeX 源码",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        BetterSelectionContainer(Modifier.fillMaxWidth()) {
+        BetterSelectionContainer(Modifier.fillMaxWidth(), obscuredPadding = contentPadding) {
             Markdown(
                 content = MARKDOWN_SAMPLE.substring(0, shown),
                 style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),

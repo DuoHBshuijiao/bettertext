@@ -74,7 +74,7 @@ internal fun HighlightTab(contentPadding: PaddingValues) {
             }
         }
         val sample = codeSamples[selected]
-        BetterSelectionContainer(Modifier.padding(horizontal = 16.dp)) {
+        BetterSelectionContainer(Modifier.padding(horizontal = 16.dp), obscuredPadding = contentPadding) {
             CodeCard(sample.code, sample.language, theme = theme)
         }
         Text(

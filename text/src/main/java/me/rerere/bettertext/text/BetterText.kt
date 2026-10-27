@@ -19,10 +19,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -68,6 +71,7 @@ fun BetterText(
     val holder = remember(prepared) { LayoutHolder() }
     val registry = LocalSelectionRegistry.current
     val selectable = remember(registry) { registry?.let { SelectableText() } }
+    selectable?.pinnableContainer = LocalPinnableContainer.current
     if (registry != null && selectable != null) {
         DisposableEffect(registry, selectable) {
             registry.register(selectable)
@@ -84,10 +88,12 @@ fun BetterText(
             .semantics { this.text = text }
             .then(
                 if (selectable != null) {
-                    Modifier.onGloballyPositioned {
-                        selectable.coordinates = it
-                        registry?.onLayoutChanged()
-                    }
+                    Modifier
+                        .onGloballyPositioned {
+                            selectable.coordinates = it
+                            registry?.onLayoutChanged()
+                        }
+                        .nestedScroll(NoScrollConnection, selectable.scrollDispatcher)
                 } else {
                     Modifier
                 },
@@ -179,6 +185,9 @@ private fun open(link: LinkAnnotation, uriHandler: UriHandler) {
         link is LinkAnnotation.Url -> runCatching { uriHandler.openUri(link.url) }
     }
 }
+
+/** The text only dispatches scrolling, for the selection's auto-scroll. */
+private val NoScrollConnection = object : NestedScrollConnection {}
 
 /** The last layout, observable so drawing follows relayouts. */
 private class LayoutHolder {

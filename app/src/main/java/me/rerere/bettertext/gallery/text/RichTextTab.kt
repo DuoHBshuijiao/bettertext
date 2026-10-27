@@ -98,7 +98,7 @@ internal fun RichTextTab(contentPadding: PaddingValues) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            BetterSelectionContainer {
+            BetterSelectionContainer(obscuredPadding = contentPadding) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     for (sample in richTextSamples) {
                         Heading(sample.title, sample.description)

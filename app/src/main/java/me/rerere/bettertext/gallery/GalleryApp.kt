@@ -10,6 +10,7 @@ import me.rerere.bettertext.gallery.latex.PlaygroundScreen
 import me.rerere.bettertext.gallery.latex.SectionScreen
 import me.rerere.bettertext.gallery.latex.WrappingScreen
 import me.rerere.bettertext.gallery.latex.sections
+import me.rerere.bettertext.gallery.markdown.ChatScreen
 
 /** The tabs of the home screen. */
 @Serializable
@@ -27,6 +28,10 @@ internal data object WrappingRoute : NavKey
 internal data class PlaygroundRoute(val section: Int = -1, val sample: Int = -1) : NavKey {
     val initial get() = sections.getOrNull(section)?.samples?.getOrNull(sample)
 }
+
+/** A long conversation in a lazy list, selectable across messages. */
+@Serializable
+internal data object ChatRoute : NavKey
 
 @Composable
 internal fun GalleryApp() {
@@ -46,6 +51,7 @@ internal fun GalleryApp() {
             }
             entry<WrappingRoute> { WrappingScreen(onBack = back) }
             entry<PlaygroundRoute> { route -> PlaygroundScreen(route.initial, onBack = back) }
+            entry<ChatRoute> { ChatScreen(onBack = back) }
         },
     )
 }

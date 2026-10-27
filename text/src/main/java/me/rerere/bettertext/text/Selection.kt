@@ -2,6 +2,7 @@ package me.rerere.bettertext.text
 
 import android.icu.text.BreakIterator
 import android.text.StaticLayout
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -9,7 +10,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.input.nestedscroll.NestedScrollDispatcher
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.PinnableContainer
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.findRootCoordinates
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 
 /** Provided by [BetterSelectionContainer]; null outside one. */
 internal val LocalSelectionRegistry = staticCompositionLocalOf<SelectionRegistry?> { null }
@@ -19,6 +26,12 @@ internal class SelectableText {
     var prepared: PreparedText? = null
     var layout: StaticLayout? = null
     var coordinates: LayoutCoordinates? = null
+
+    /** Pinned while part of the text is selected, so a lazy list keeps it when it scrolls out of view. */
+    var pinnableContainer: PinnableContainer? = null
+
+    /** Scrolls the scrollable ancestors of the text, such as a code block's, when a drag reaches their edge. */
+    val scrollDispatcher = NestedScrollDispatcher()
 
     val length: Int get() = layout?.text?.length ?: 0
     val isAttached: Boolean get() = layout != null && coordinates?.isAttached == true
@@ -110,7 +123,20 @@ internal class SelectionRegistry {
 
     var containerCoordinates: LayoutCoordinates? = null
 
-    var selection: Selection? by mutableStateOf(null)
+    /** The parts of the window covered by other UI; see [BetterSelectionContainer]. */
+    var obscuredPadding = PaddingValues()
+    var density = Density(1f)
+    var layoutDirection = LayoutDirection.Ltr
+
+    private var currentSelection: Selection? by mutableStateOf(null)
+    private val pins = HashMap<SelectableText, PinnableContainer.PinnedHandle>()
+
+    var selection: Selection?
+        get() = currentSelection
+        set(value) {
+            currentSelection = value
+            updatePins()
+        }
 
     /** Bumped when a text in the selection moves or is laid out again, to reposition handles. */
     var layoutVersion by mutableIntStateOf(0)
@@ -122,12 +148,57 @@ internal class SelectionRegistry {
 
     fun unregister(text: SelectableText) {
         texts.remove(text)
+        pins.remove(text)?.release()
         val s = selection
         if (s != null && (s.start.text === text || s.end.text === text)) selection = null
     }
 
     fun onLayoutChanged() {
         if (selection != null) layoutVersion++
+    }
+
+    /** Pins the texts from the selection's start to its end and releases the others, as Compose's selection does. */
+    private fun updatePins() {
+        val texts = ordered()
+        val ends = selection?.let { normalized(it, texts) }
+        val selected = if (ends == null) emptySet() else texts.subList(texts.indexOf(ends.first.text), texts.indexOf(ends.second.text) + 1).toSet()
+        val iterator = pins.iterator()
+        while (iterator.hasNext()) {
+            val (text, handle) = iterator.next()
+            if (text !in selected) {
+                handle.release()
+                iterator.remove()
+            }
+        }
+        for (text in selected) {
+            if (text !in pins) text.pinnableContainer?.let { pins[text] = it.pin() }
+        }
+    }
+
+    fun releasePins() {
+        pins.values.forEach { it.release() }
+        pins.clear()
+    }
+
+    /**
+     * The part of [coordinates] that is visible and not under [obscuredPadding],
+     * in its own coordinates; null when there's none.
+     */
+    fun visibleBounds(coordinates: LayoutCoordinates): Rect? {
+        val root = coordinates.findRootCoordinates()
+        val rootTopLeft = root.localToWindow(Offset.Zero)
+        val padding = obscuredPadding
+        val window = with(density) {
+            Rect(
+                rootTopLeft.x + padding.calculateLeftPadding(layoutDirection).toPx(),
+                rootTopLeft.y + padding.calculateTopPadding().toPx(),
+                rootTopLeft.x + root.size.width - padding.calculateRightPadding(layoutDirection).toPx(),
+                rootTopLeft.y + root.size.height - padding.calculateBottomPadding().toPx(),
+            )
+        }
+        val bounds = coordinates.boundsInWindow().intersect(window)
+        if (bounds.width <= 0f || bounds.height <= 0f) return null
+        return Rect(coordinates.windowToLocal(bounds.topLeft), coordinates.windowToLocal(bounds.bottomRight))
     }
 
     /** Attached texts in document order. */
