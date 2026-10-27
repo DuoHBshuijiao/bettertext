@@ -37,6 +37,7 @@ internal fun MarkdownScreen(onBack: () -> Unit) {
     var shown by rememberSaveable { mutableIntStateOf(MARKDOWN_SAMPLE.length) }
     var streaming by rememberSaveable { mutableStateOf(false) }
     var registered by rememberSaveable { mutableStateOf(true) }
+    var completeEnd by rememberSaveable { mutableStateOf(true) }
     LaunchedEffect(streaming) {
         if (!streaming) return@LaunchedEffect
         shown = 0
@@ -64,17 +65,18 @@ internal fun MarkdownScreen(onBack: () -> Unit) {
                     shown = MARKDOWN_SAMPLE.length
                 }) { Text("显示全部") }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text("注册 Material 3 组件")
-                    Text(
-                        "代码块、表格、图片和折叠块由应用注册；关闭后显示库的兜底效果",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Switch(checked = registered, onCheckedChange = { registered = it })
-            }
+            SwitchRow(
+                title = "注册 Material 3 组件",
+                description = "代码块、表格、图片和折叠块由应用注册；关闭后显示库的兜底效果",
+                checked = registered,
+                onCheckedChange = { registered = it },
+            )
+            SwitchRow(
+                title = "流式时处理未完成的语法",
+                description = "隐藏或补全末尾没写完的公式、加粗、链接等；关闭后它们会先显示成原文",
+                checked = completeEnd,
+                onCheckedChange = { completeEnd = it },
+            )
             Text(
                 "${shown} / ${MARKDOWN_SAMPLE.length} 字符 · 长按可以跨块选择，公式复制为 LaTeX 源码",
                 style = MaterialTheme.typography.labelSmall,
@@ -86,8 +88,24 @@ internal fun MarkdownScreen(onBack: () -> Unit) {
                     style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
                     theme = rememberMaterialMarkdownTheme(),
                     components = if (registered) materialMarkdownComponents else MarkdownDefaults.components,
+                    streaming = streaming && completeEnd,
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun SwitchRow(title: String, description: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text(title)
+            Text(
+                description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }

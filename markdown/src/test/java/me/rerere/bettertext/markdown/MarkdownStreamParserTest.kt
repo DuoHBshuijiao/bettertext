@@ -62,6 +62,8 @@ class MarkdownStreamParserTest {
         \int_0^1 x\,dx
         \]
 
+        Escaped \\(literal), code `\(x\)` and an image ![logo][ref].
+
         Last paragraph with a [reference][ref].
     """.trimIndent().replace("@@", "\$\$")
 
@@ -72,6 +74,21 @@ class MarkdownStreamParserTest {
             val prefix = document.substring(0, end)
             assertEquals("prefix of length $end", parseMarkdown(prefix).blocks, parser.parse(prefix).blocks)
         }
+    }
+
+    @Test
+    fun everyPrefixMatchesFullParseWhileStreaming() {
+        val parser = MarkdownStreamParser()
+        for (end in 1..document.length) {
+            val prefix = document.substring(0, end)
+            assertEquals(
+                "prefix of length $end",
+                parseMarkdown(prefix, streaming = true).blocks,
+                parser.parse(prefix, streaming = true).blocks,
+            )
+        }
+        // The final parse, once streaming ends, drops the completions.
+        assertEquals(parseMarkdown(document).blocks, parser.parse(document).blocks)
     }
 
     @Test

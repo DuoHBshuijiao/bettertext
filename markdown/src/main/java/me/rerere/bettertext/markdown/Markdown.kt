@@ -14,7 +14,6 @@ import androidx.compose.ui.text.LinkInteractionListener
 import androidx.compose.ui.text.TextStyle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapNotNull
 
@@ -29,6 +28,8 @@ import kotlinx.coroutines.flow.mapNotNull
  * beginning, and blocks that didn't change don't recompose.
  *
  * @param softBreakAsLineBreak render a single newline in a paragraph as a line break.
+ * @param streaming true while [content] is still being generated: unfinished syntax at its end,
+ * such as `**bold` or `$\frac{`, is closed or hidden instead of showing as raw text first.
  * @param onLinkClick called when a link is clicked; null opens it with the system UriHandler.
  */
 @Composable
@@ -39,10 +40,11 @@ fun Markdown(
     theme: MarkdownTheme = MarkdownDefaults.theme,
     components: MarkdownComponents = MarkdownDefaults.components,
     softBreakAsLineBreak: Boolean = true,
+    streaming: Boolean = false,
     onLinkClick: ((url: String) -> Unit)? = null,
 ) {
     Markdown(
-        document = rememberMarkdownDocument(content, softBreakAsLineBreak),
+        document = rememberMarkdownDocument(content, softBreakAsLineBreak, streaming),
         modifier = modifier,
         style = style,
         theme = theme,
@@ -90,15 +92,20 @@ fun Markdown(
  * parsing, only the latest content is parsed.
  */
 @Composable
-fun rememberMarkdownDocument(content: String, softBreakAsLineBreak: Boolean = true): MarkdownDocument {
+fun rememberMarkdownDocument(
+    content: String,
+    softBreakAsLineBreak: Boolean = true,
+    streaming: Boolean = false,
+): MarkdownDocument {
     val parser = remember(softBreakAsLineBreak) { MarkdownStreamParser(softBreakAsLineBreak) }
-    val state = remember(parser) { mutableStateOf(parser.parse(content)) }
-    val currentContent by rememberUpdatedState(content)
+    val state = remember(parser) { mutableStateOf(parser.parse(content, streaming)) }
+    val currentInput by rememberUpdatedState(content to streaming)
     LaunchedEffect(parser) {
-        snapshotFlow { currentContent }
+        // The parser returns the same document when the input didn't change, so the first,
+        // already parsed input costs nothing.
+        snapshotFlow { currentInput }
             .conflate()
-            .filter { it != state.value.source }
-            .mapNotNull { runCatching { parser.parse(it) }.getOrNull() }
+            .mapNotNull { (content, streaming) -> runCatching { parser.parse(content, streaming) }.getOrNull() }
             .flowOn(Dispatchers.Default)
             .collect { state.value = it }
     }

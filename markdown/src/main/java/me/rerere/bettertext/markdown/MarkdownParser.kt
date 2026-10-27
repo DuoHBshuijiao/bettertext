@@ -42,11 +42,25 @@ private val markdownParser = MarkdownParser(flavour)
  *
  * @param softBreakAsLineBreak whether a single newline inside a paragraph renders as a line break (the usual
  * behavior in chat). When false, it is treated as a space, as in CommonMark.
+ * @param streaming whether [content] is still being generated. Unfinished syntax at its end is then hidden
+ * or closed, so it doesn't show as raw text first.
  */
-fun parseMarkdown(content: String, softBreakAsLineBreak: Boolean = true): MarkdownDocument {
+fun parseMarkdown(content: String, softBreakAsLineBreak: Boolean = true, streaming: Boolean = false): MarkdownDocument {
     val source = normalizeLineEndings(content)
-    val text = if (hasLatexDelimiters(source)) normalizeLatexDelimiters(source, codeRanges(parseTree(source), 0)) else source
-    val tree = parseTree(text)
+    var text = source
+    if (hasLatexDelimiters(source)) {
+        val sourceTree = parseTree(source)
+        val pending = if (streaming) unclosedCodeRange(source, sourceTree) else null
+        text = normalizeLatexDelimiters(source, withUnclosedCode(codeRanges(sourceTree, 0), pending))
+    }
+    var tree = parseTree(text)
+    if (streaming) {
+        val definitions = HashMap<CharSequence, LinkMap.LinkInfo>().also { collectLinkDefinitions(text, tree.children, it) }
+        completeStreamingEnd(text, tree, definitions::containsKey).let { (completed, completedTree) ->
+            text = completed
+            tree = completedTree
+        }
+    }
     return MarkdownDocument(
         source = content,
         blocks = convertNodes(text, tree, tree.children, LinkMap.buildLinkMap(tree, text), softBreakAsLineBreak),

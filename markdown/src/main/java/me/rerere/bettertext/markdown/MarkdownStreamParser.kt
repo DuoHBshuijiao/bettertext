@@ -32,23 +32,40 @@ class MarkdownStreamParser(private val softBreakAsLineBreak: Boolean = true) {
     /** A run of top-level blocks covering `[0, end)` of the source before delimiter conversion, with its code. */
     private class CodeChunk(val end: Int, val code: List<IntRange>)
 
+    /** The text the chunks were parsed from, with unfinished syntax completed when streaming. */
     private var text = ""
     private var chunks: List<Chunk> = emptyList()
+    private var lastInput = ""
+    private var lastStreaming = false
+    private var document: MarkdownDocument? = null
     private var source = ""
     private var codeChunks: List<CodeChunk> = emptyList()
 
-    fun parse(content: String): MarkdownDocument {
+    /** Parses [content]; [streaming] is as in [parseMarkdown]. */
+    fun parse(content: String, streaming: Boolean = false): MarkdownDocument {
         val lines = normalizeLineEndings(content)
-        val normalized = if (hasLatexDelimiters(lines)) normalizeLatexDelimiters(lines, sourceCodeRanges(lines)) else lines
-        if (normalized == text && chunks.isNotEmpty()) {
-            return MarkdownDocument(source = content, blocks = chunks.flatMap { it.blocks })
+        val normalized = if (hasLatexDelimiters(lines)) normalizeLatexDelimiters(lines, sourceCodeRanges(lines, streaming)) else lines
+        document?.let {
+            if (normalized == lastInput && streaming == lastStreaming) {
+                return if (it.source == content) it else MarkdownDocument(content, it.blocks).also { doc -> document = doc }
+            }
         }
         val common = commonPrefixLength(text, normalized)
         val kept = chunks.takeWhile { it.end <= common }.dropLast(REPARSED_CHUNKS)
         val tailStart = kept.lastOrNull()?.end ?: 0
-        val tail = normalized.substring(tailStart)
+        var tail = normalized.substring(tailStart)
 
-        val tree = parseTree(tail)
+        var tree = parseTree(tail)
+        // Unfinished syntax can only be in the last block, which is always in the tail.
+        if (streaming) {
+            val defined = HashSet<CharSequence>()
+            for (chunk in kept) defined += chunk.definitions.keys
+            defined += HashMap<CharSequence, LinkMap.LinkInfo>().also { collectLinkDefinitions(tail, tree.children, it) }.keys
+            completeStreamingEnd(tail, tree, defined::contains).let { (completed, completedTree) ->
+                tail = completed
+                tree = completedTree
+            }
+        }
         val groups = group(tree, tail)
         val groupDefinitions = groups.map { nodes ->
             HashMap<CharSequence, LinkMap.LinkInfo>().also { collectLinkDefinitions(tail, nodes, it) }
@@ -67,16 +84,18 @@ class MarkdownStreamParser(private val softBreakAsLineBreak: Boolean = true) {
                 definitions = groupDefinitions[i].ifEmpty { emptyMap() },
             )
         }
-        text = normalized
+        text = normalized.substring(0, tailStart) + tail
         chunks = kept + parsed
-        return MarkdownDocument(source = content, blocks = chunks.flatMap { it.blocks })
+        lastInput = normalized
+        lastStreaming = streaming
+        return MarkdownDocument(source = content, blocks = chunks.flatMap { it.blocks }).also { document = it }
     }
 
     /**
-     * Code ranges in [newSource] parsed as it is, for [normalizeLatexDelimiters].
-     * Parsed incrementally like the blocks in [parse].
+     * Code ranges in [newSource] parsed as it is, for [normalizeLatexDelimiters], including an unclosed
+     * code span at the end when [streaming]. Parsed incrementally like the blocks in [parse].
      */
-    private fun sourceCodeRanges(newSource: String): List<IntRange> {
+    private fun sourceCodeRanges(newSource: String, streaming: Boolean): List<IntRange> {
         val common = commonPrefixLength(source, newSource)
         val kept = codeChunks.takeWhile { it.end <= common }.dropLast(REPARSED_CHUNKS)
         val tailStart = kept.lastOrNull()?.end ?: 0
@@ -90,7 +109,8 @@ class MarkdownStreamParser(private val softBreakAsLineBreak: Boolean = true) {
         }
         source = newSource
         codeChunks = kept + parsed
-        return codeChunks.flatMap { it.code }
+        val pending = if (streaming) unclosedCodeRange(tail, tree)?.let { it.first + tailStart until it.last + 1 + tailStart } else null
+        return withUnclosedCode(codeChunks.flatMap { it.code }, pending)
     }
 
     private companion object {
