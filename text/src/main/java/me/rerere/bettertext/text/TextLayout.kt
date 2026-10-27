@@ -2,6 +2,8 @@ package me.rerere.bettertext.text
 
 import android.annotation.SuppressLint
 import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.os.Build
 import android.text.Layout
@@ -19,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -48,6 +51,8 @@ internal class PreparedText(
     val paint: TextPaint,
     val alignment: Layout.Alignment,
     val justify: Boolean,
+    /** Links with their ranges in [spanned]. */
+    val links: List<LinkRange>,
     /** Composable inline items in text order, with their offsets in [spanned]. */
     val composables: List<ComposableSpan>,
     val composableOffsets: IntArray,
@@ -90,12 +95,19 @@ internal class PreparedText(
                 spanned.setSpan(BackgroundColorSpan(style.background.toArgb()), 0, spanned.length, SPAN_FLAGS)
             }
 
-            for (range in text.spanStyles) {
+            val links = text.getLinkAnnotations(0, text.length).mapNotNull { range ->
                 val start = expanded.offsets[range.start]
                 val end = expanded.offsets[range.end]
-                if (start < end) applySpanStyle(spanned, range.item, start, end, density)
+                if (start < end) LinkRange(range.item, start, end) else null
             }
-            applyTypefaces(spanned, text, expanded, style, resolveTypeface)
+            // Span styles, then link styles over them, in offsets of the expanded text.
+            val styles = text.spanStyles.mapNotNull { range ->
+                val start = expanded.offsets[range.start]
+                val end = expanded.offsets[range.end]
+                if (start < end) AnnotatedString.Range(range.item, start, end) else null
+            } + links.mapNotNull { link -> link.link.styles?.style?.let { AnnotatedString.Range(it, link.start, link.end) } }
+            for (range in styles) applySpanStyle(spanned, range.item, range.start, range.end, density)
+            applyTypefaces(spanned, styles, style, resolveTypeface)
 
             val composables = ArrayList<ComposableSpan>()
             val composableOffsets = ArrayList<Int>()
@@ -135,6 +147,7 @@ internal class PreparedText(
                 paint,
                 alignment,
                 style.textAlign == TextAlign.Justify,
+                links,
                 composables,
                 composableOffsets.toIntArray(),
             )
@@ -169,18 +182,16 @@ internal class PreparedText(
          */
         private fun applyTypefaces(
             spanned: SpannableString,
-            text: AnnotatedString,
-            expanded: ExpandedText,
+            styles: List<AnnotatedString.Range<SpanStyle>>,
             base: TextStyle,
             resolveTypeface: (FontFamily?, FontWeight, FontStyle, FontSynthesis) -> Typeface,
         ) {
-            val ranges = text.spanStyles.filter {
+            val ranges = styles.filter {
                 val s = it.item
-                (s.fontFamily != null || s.fontWeight != null || s.fontStyle != null || s.fontSynthesis != null) &&
-                    expanded.offsets[it.start] < expanded.offsets[it.end]
+                s.fontFamily != null || s.fontWeight != null || s.fontStyle != null || s.fontSynthesis != null
             }
             if (ranges.isEmpty()) return
-            val points = ranges.flatMap { listOf(expanded.offsets[it.start], expanded.offsets[it.end]) }.distinct().sorted()
+            val points = ranges.flatMap { listOf(it.start, it.end) }.distinct().sorted()
             for (i in 0 until points.lastIndex) {
                 val start = points[i]
                 val end = points[i + 1]
@@ -190,7 +201,7 @@ internal class PreparedText(
                 var synthesis = base.fontSynthesis ?: FontSynthesis.All
                 var covered = false
                 for (range in ranges) {
-                    if (expanded.offsets[range.start] > start || expanded.offsets[range.end] < end) continue
+                    if (range.start > start || range.end < end) continue
                     covered = true
                     val s = range.item
                     s.fontFamily?.let { family = it }
@@ -284,4 +295,40 @@ internal class TextLayoutCache(private val prepared: PreparedText) {
         if (layout.isRtlCharAt(offset)) x -= span.width
         return x.roundToInt() to layout.getLineBaseline(line) + span.top
     }
+}
+
+internal class LinkRange(val link: LinkAnnotation, val start: Int, val end: Int)
+
+/** The index of the character under [x], [y] in [layout], or -1 if the point is beside the text. */
+internal fun Layout.charIndexAt(x: Float, y: Float): Int {
+    if (y < 0 || y >= height) return -1
+    val line = getLineForVertical(y.toInt())
+    if (x < getLineLeft(line) || x > getLineRight(line)) return -1
+    val start = getLineStart(line)
+    val end = getLineEnd(line)
+    if (start == end) return -1
+    // The offset after a wrapped line's last character is on the next line, so that character's far edge
+    // can't be measured. The characters of a line cover it, so it's the one under x when no other is.
+    val wrapped = line < lineCount - 1
+    val measurable = if (wrapped) end - 1 else end
+    val path = Path()
+    val bounds = RectF()
+    fun charContains(offset: Int): Boolean {
+        // Selection resolves both edges using the character's actual bidi run. Choosing primary or
+        // secondary carets by direction alone fails for nested runs, such as digits inside RTL text.
+        // Both offsets must be on this line, otherwise the selection also covers the line break.
+        getSelectionPath(offset, offset + 1, path)
+        path.computeBounds(bounds, true)
+        return x >= bounds.left && x < bounds.right
+    }
+    // getOffsetForHorizontal returns the nearest boundary; the character under x is on one side of it,
+    // which in mixed-direction text may not be the logical neighbor, so check all as a fallback.
+    val offset = getOffsetForHorizontal(line, x)
+    for (candidate in intArrayOf(offset - 1, offset)) {
+        if (candidate in start until measurable && charContains(candidate)) return candidate
+    }
+    for (candidate in start until measurable) {
+        if (charContains(candidate)) return candidate
+    }
+    return if (wrapped) end - 1 else offset.coerceIn(start, end - 1)
 }

@@ -3,6 +3,9 @@ package me.rerere.bettertext.text
 import android.graphics.Path
 import android.graphics.Typeface
 import android.text.StaticLayout
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -12,9 +15,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
@@ -22,9 +27,12 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFontFamilyResolver
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.text
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Constraints
 
@@ -35,7 +43,8 @@ import androidx.compose.ui.unit.Constraints
  * [inlineContent]; remember the map, since a new map re-prepares the text.
  * Each line is at least `style.lineHeight` tall and grows to fit taller
  * inline items or larger text, instead of overlapping its neighbors.
- * Inside a [BetterSelectionContainer] the text is selectable.
+ * Inside a [BetterSelectionContainer] the text is selectable. Tapping a
+ * [LinkAnnotation] calls its listener, or opens its URL when it has none.
  *
  * @param maxLines lines beyond this are cut off with an ellipsis.
  */
@@ -65,6 +74,7 @@ fun BetterText(
             onDispose { registry.unregister(selectable) }
         }
     }
+    val uriHandler = LocalUriHandler.current
     val selectionColor = LocalTextSelectionColors.current.backgroundColor
     val selectionPath = remember { Path() }
 
@@ -77,6 +87,26 @@ fun BetterText(
                     Modifier.onGloballyPositioned {
                         selectable.coordinates = it
                         registry?.onLayoutChanged()
+                    }
+                } else {
+                    Modifier
+                },
+            )
+            .then(
+                if (prepared.links.isNotEmpty()) {
+                    Modifier.pointerInput(prepared) {
+                        fun linkAt(position: Offset): LinkRange? {
+                            val index = holder.layout?.charIndexAt(position.x, position.y) ?: -1
+                            return prepared.links.lastOrNull { index >= it.start && index < it.end }
+                        }
+                        awaitEachGesture {
+                            val down = awaitFirstDown()
+                            val link = linkAt(down.position) ?: return@awaitEachGesture
+                            val up = waitForUpOrCancellation() ?: return@awaitEachGesture
+                            if (linkAt(up.position) !== link) return@awaitEachGesture
+                            up.consume()
+                            open(link.link, uriHandler)
+                        }
                     }
                 } else {
                     Modifier
@@ -139,6 +169,15 @@ fun BetterText(
     maxLines: Int = Int.MAX_VALUE,
 ) {
     BetterText(remember(text) { AnnotatedString(text) }, modifier, style, maxLines = maxLines)
+}
+
+/** Calls the link's listener, or opens a URL link with [uriHandler] when it has none. */
+private fun open(link: LinkAnnotation, uriHandler: UriHandler) {
+    val listener = link.linkInteractionListener
+    when {
+        listener != null -> listener.onClick(link)
+        link is LinkAnnotation.Url -> runCatching { uriHandler.openUri(link.url) }
+    }
 }
 
 /** The last layout, observable so drawing follows relayouts. */

@@ -35,7 +35,7 @@ internal class SelectableText {
         val layout = layout ?: return IntRange.EMPTY
         if (length == 0) return 0 until 0
         var offset = offsetAt(position)
-        // getOffsetForHorizontal returns the nearest boundary; step back to the character under x.
+        // offsetAt returns the nearest boundary; step back to the character under x.
         val line = layout.getLineForOffset(offset)
         if (offset > layout.getLineStart(line) && layout.getPrimaryHorizontal(offset) > position.x) offset--
         offset = offset.coerceAtMost(length - 1)
