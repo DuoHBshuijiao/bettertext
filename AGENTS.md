@@ -22,6 +22,8 @@ BetterText is a Compose library that replaces `BasicText` to improve rich markdo
 ./gradlew :app:installDebug                               # install the demo on a device/emulator
 ```
 
+CI (`.github/workflows/ci.yml`) runs the unit tests, lint and the demo build on every push to `main` and every pull request.
+
 The unit tests run on the plain JVM: parsing and layout don't depend on Android, and `LatexLayout.create(...)` uses an approximate glyph measurer there. Gradle caches test results, so add `--rerun` to force tests to run again when only an external input changed.
 
 ## Architecture of `:latex`
