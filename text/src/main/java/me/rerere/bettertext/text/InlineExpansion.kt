@@ -5,12 +5,16 @@ import androidx.compose.ui.text.AnnotatedString
 /** The character that stands for one segment of an inline item in the laid-out text. */
 internal const val OBJECT_CHAR = '\uFFFC'
 
+/** Follows a decoration, so the line doesn't break between it and the text after it. */
+internal const val WORD_JOINER = '\u2060'
+
 /**
  * An inline item occupying `[start, start + segments)` of [ExpandedText.text];
- * [altText] stands for it when the text is copied.
+ * [altText] stands for it when the text is copied. A decoration (empty alt
+ * text) also covers the [WORD_JOINER] after it.
  */
 internal class InlineItem(val content: BetterInline, val start: Int, val segments: Int, val altText: String) {
-    val end: Int get() = start + segments
+    val end: Int get() = start + segments + if (altText.isEmpty()) 1 else 0
 }
 
 /**
@@ -59,6 +63,7 @@ internal fun expandInlines(text: AnnotatedString, inlineContent: Map<String, Bet
         if (segments <= 0) continue
         if (annotation.start == annotation.end) emptyStarts.putIfAbsent(annotation.start, start)
         repeat(segments) { out.append(OBJECT_CHAR) }
+        if (annotation.start == annotation.end) out.append(WORD_JOINER)
         items.add(InlineItem(content, start, segments, source.substring(annotation.start, annotation.end)))
     }
     copyTo(source.length)

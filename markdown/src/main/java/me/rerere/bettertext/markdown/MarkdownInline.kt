@@ -119,7 +119,7 @@ private class InlineTextBuilder(
 
     private fun appendText(text: String) {
         val offset = builder.length
-        builder.append(text)
+        appendDecorated(text)
         val quoteStyle = context.theme.quotedText ?: return
         text.forEachIndexed { index, char ->
             val close = pendingQuoteClose
@@ -137,6 +137,23 @@ private class InlineTextBuilder(
         }
     }
 
+    // Decorations have no alt text, so the offsets of the text in the output don't change.
+    private fun appendDecorated(text: String) {
+        val decorations = context.components.textDecorations?.invoke(scope, text)
+        if (decorations.isNullOrEmpty()) {
+            builder.append(text)
+            return
+        }
+        var last = 0
+        for (decoration in decorations.sortedBy { it.offset }) {
+            val at = decoration.offset.coerceIn(last, text.length)
+            builder.append(text, last, at)
+            appendDecoration(decoration.item)
+            last = at
+        }
+        builder.append(text, last, text.length)
+    }
+
     private fun appendLink(link: MarkdownInline.Link) {
         val inline = context.components.inlineLink?.invoke(scope, link)
         if (inline != null) {
@@ -152,11 +169,7 @@ private class InlineTextBuilder(
     }
 
     private fun appendCode(code: String) {
-        context.components.inlineCodePrefix?.invoke(scope, code)?.let { prefix ->
-            val id = "markdown:${inlineContent.size}"
-            inlineContent[id] = prefix
-            builder.appendInline(id, altText = "")
-        }
+        context.components.inlineCodePrefix?.invoke(scope, code)?.let(::appendDecoration)
         builder.withStyle(context.theme.inlineCode) { append(code) }
     }
 
@@ -167,6 +180,12 @@ private class InlineTextBuilder(
             return
         }
         appendItem(inline, altText = "$${math.formula}$")
+    }
+
+    private fun appendDecoration(item: BetterInline) {
+        val id = "markdown:${inlineContent.size}"
+        inlineContent[id] = item
+        builder.appendInline(id, altText = "")
     }
 
     private fun appendItem(inline: BetterInline, altText: String) {

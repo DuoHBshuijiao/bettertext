@@ -66,11 +66,13 @@ class InlineExpansionTest {
             append("bc")
         }
         val expanded = expandInlines(text, mapOf("swatch" to swatch))
-        assertEquals("a\uFFFCbc", expanded.text)
+        // A word joiner keeps the item on the same line as the text after it.
+        assertEquals("a\uFFFC\u2060bc", expanded.text)
         assertEquals(listOf(1), expanded.items.map { it.start })
+        assertEquals(listOf(3), expanded.items.map { it.end })
         assertEquals("", expanded.items[0].altText)
         // A range starting at the item begins after it; one ending there stops before it.
-        assertEquals(listOf(0, 2, 3, 4), expanded.offsets.toList())
-        assertEquals(listOf(0, 1, 3, 4), expanded.endOffsets.toList())
+        assertEquals(listOf(0, 3, 4, 5), expanded.offsets.toList())
+        assertEquals(listOf(0, 1, 4, 5), expanded.endOffsets.toList())
     }
 }

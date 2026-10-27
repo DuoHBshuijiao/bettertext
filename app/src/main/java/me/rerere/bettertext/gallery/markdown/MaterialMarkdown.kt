@@ -48,6 +48,7 @@ import me.rerere.bettertext.gallery.highlight.CodeCard
 import me.rerere.bettertext.gallery.text.ColorSwatch
 import me.rerere.bettertext.latex.LatexBlock
 import me.rerere.bettertext.latex.LatexInline
+import me.rerere.bettertext.markdown.InlineDecoration
 import me.rerere.bettertext.markdown.MarkdownBlock
 import me.rerere.bettertext.markdown.MarkdownComponents
 import me.rerere.bettertext.markdown.LocalMarkdownTextStyle
@@ -78,7 +79,15 @@ internal val materialMarkdownComponents = MarkdownComponents(
     image = { image, _ -> ImagePlaceholder(image.alt ?: image.url) },
     details = { block, summary, content -> CollapsibleDetails(block.open, summary, content) },
     inlineCodePrefix = { code -> parseColorCode(code)?.let { ColorSwatch(it) } },
+    textDecorations = { text ->
+        TEXT_COLOR.findAll(text).mapNotNull { match ->
+            parseColorCode(match.value)?.let { InlineDecoration(match.range.first, ColorSwatch(it)) }
+        }.toList()
+    },
 )
+
+// Outside code, only six or eight hex digits count, so "#123" stays an issue number.
+private val TEXT_COLOR = Regex("""(?<![\w&])#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6})(?!\w)|rgb\([^()]*\)""")
 
 private val HEX_COLOR = Regex("#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})")
 private val RGB_COLOR = Regex("""rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)""")

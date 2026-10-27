@@ -50,6 +50,9 @@ class MarkdownInlineScope(
     val context: Context,
 )
 
+/** An item drawn before [offset] of a text, e.g. a swatch before a color code; it copies as nothing. */
+class InlineDecoration(val offset: Int, val item: BetterInline)
+
 /**
  * Components registered by the app. The module draws text, lists and quotes
  * itself; everything else is up to the app, with a plain fallback when a slot
@@ -88,6 +91,11 @@ class MarkdownComponents(
      * text with [MarkdownTheme.inlineCode], and the item copies as nothing.
      */
     val inlineCodePrefix: (MarkdownInlineScope.(code: String) -> BetterInline?)? = null,
+    /**
+     * Decorations in plain text, e.g. a swatch before a color written as `#8B0000` outside code.
+     * Called for each run of plain text; offsets are in that run.
+     */
+    val textDecorations: (MarkdownInlineScope.(text: String) -> List<InlineDecoration>)? = null,
 )
 
 object MarkdownDefaults {
