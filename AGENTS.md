@@ -5,8 +5,9 @@
 BetterText is a Compose library that replaces `BasicText` to improve rich markdown rendering, especially inline formulas and other inline components. It lays out text itself with `StaticLayout` instead of building on `BasicText` and `SelectionContainer`, because of two Compose issues: a uniform `lineHeight` makes tall inline content overlap adjacent lines ([427657659](https://issuetracker.google.com/issues/427657659)), and `SelectionRegistrar` is internal ([233102278](https://issuetracker.google.com/issues/233102278)). Switch to the built-in APIs once those are fixed.
 
 - `:latex`: a Kotlin port of the KaTeX 0.19.1 parser and HTML builder. It renders LaTeX inline and in display mode on an Android `Canvas` with the bundled KaTeX fonts.
-- `:text`: the `BetterText` composable and `BetterSelectionContainer`. The markdown mapping is not written yet.
-- `:app`: a demo gallery built with Navigation 3. It has categorized samples, a rich text demo, a wrapping demo, and a live editor. Samples live in `gallery/Samples.kt`, and `GallerySamplesTest` checks that they all parse. `gallery/DemoMarkup.kt` is a tiny markup converter that stands in for the markdown layer.
+- `:text`: the `BetterText` composable and `BetterSelectionContainer`.
+- `:markdown`: parses Markdown (with math and embedded HTML) and renders it with `BetterText`. It doesn't depend on Material 3; apps register code blocks, tables, images and details blocks.
+- `:app`: a demo gallery built with Navigation 3. It has categorized samples, a Markdown demo with simulated streaming, a rich text demo, a wrapping demo, and a live editor. Samples live in `gallery/Samples.kt`, and `GallerySamplesTest` checks that they all parse. `gallery/MaterialMarkdown.kt` shows how an app registers Markdown components and maps its theme.
 
 ## Commands
 
@@ -15,6 +16,7 @@ BetterText is a Compose library that replaces `BasicText` to improve rich markdo
 ./gradlew :latex:testDebugUnitTest                        # JVM unit tests (all)
 ./gradlew :latex:testDebugUnitTest --tests '*MiscTest*'   # one class (append .methodName for one test)
 ./gradlew :text:testDebugUnitTest                         # text layer unit tests
+./gradlew :markdown:testDebugUnitTest                     # Markdown parser tests
 ./gradlew :app:installDebug                               # install the demo on a device/emulator
 ```
 
@@ -63,4 +65,12 @@ Package: `me.rerere.bettertext.text`. Only the inline expansion is unit-tested; 
 3. **Line height**: `StrutSpan` (a `LineHeightSpan`) makes each line at least `lineHeight` tall, with CSS-style half-leading, and lets taller lines grow. It measures each line's extent itself, because `StaticLayout` seeds a line that starts mid-run with the metrics the span returned for the previous line.
 4. **Layout** (`TextLayoutCache`): the width is the text's desired width clamped to the constraints, like Compose. `ReplacementSpan.draw` only gets metric-affecting spans applied, so inline items look up `ForegroundColorSpan` themselves.
 5. **Selection** (`Selection.kt`, `SelectionContainer.kt`): `BetterSelectionContainer` provides a `SelectionRegistry` through `LocalSelectionRegistry`; each `BetterText` inside registers a `SelectableText` with its layout and coordinates and draws its part of the highlight. The container handles long press and drag itself, draws handles in popups and shows `LocalTextToolbar`. Selection points are offsets in the laid-out text; ranges are snapped to whole inline items, which copy as their alt text. Everything uses public APIs (see issue 233102278). The container uses `focusTarget()`, not `focusable()`, which would scroll it into view when focused.
+
+## Architecture of `:markdown`
+
+Package: `me.rerere.bettertext.markdown`. Ported from RikkaHub's `ui/markdown`, which renders with Compose `Text`; keep the parser behavior in sync with it.
+
+1. **Parse** (`MarkdownParser.kt`): Markdown → HTML with RikkaHub's fork of JetBrains markdown (`com.github.rikkahub:markdown` from JitPack) → DOM with Jsoup → `MarkdownDocument` (`MarkdownNode.kt`). Going through HTML lets hand-written HTML tags nest with Markdown. `\(…\)` and `\[…\]` are rewritten to `$…$` and `$$…$$` first, outside the code found by parsing the text as written, so it costs a second parse when the text contains them.
+2. **Streaming** (`MarkdownStreamParser`): splits the top-level blocks into chunks, never across an open HTML element or next to an HTML block, and on the next call reparses only from two chunks before where the text changed. `MarkdownStreamParserTest` checks that every prefix of a document parses the same as `parseMarkdown`; keep that test passing when changing the parser.
+3. **Render** (`Markdown.kt`, `MarkdownBlocks.kt`, `MarkdownInline.kt`): paragraphs, headings, lists, quotes and formulas are drawn with `BetterText`, `LatexInline` and `LatexBlock`. Everything else comes from `MarkdownComponents`, with plain fallbacks. Text style flows through `LocalMarkdownTextStyle`, not Material's `LocalTextStyle`. Nodes are immutable data classes, so blocks that didn't change skip recomposition.
 

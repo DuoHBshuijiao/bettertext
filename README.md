@@ -7,10 +7,27 @@ Compose's `Text` makes inline formulas and other inline components awkward, and 
 ## Status
 
 - **`:latex`**: ready. A Kotlin port of KaTeX 0.19.1's parser and layout engine that draws on an Android `Canvas` with the bundled KaTeX fonts. It supports KaTeX's functions, environments, macros and symbols, except `\includegraphics` and `CD`.
-- **`:text`**: in progress. `BetterText` lays out text with inline formulas, custom drawn items and composables such as citation tags; lines grow to fit tall items. Because of the [Compose limitations](#compose-limitations) below, it lays out text itself; `BetterSelectionContainer` selects across paragraphs and copies formulas as their LaTeX source. The markdown mapping is not written yet.
-- **`:app`**: a demo gallery with categorized samples, a rich text demo, a line-wrapping demo and a live editor.
+- **`:text`**: in progress. `BetterText` lays out text with inline formulas, custom drawn items and composables such as citation tags; lines grow to fit tall items. Because of the [Compose limitations](#compose-limitations) below, it lays out text itself; `BetterSelectionContainer` selects across paragraphs and copies formulas as their LaTeX source.
+- **`:markdown`**: renders Markdown (GFM, math, embedded HTML) with `BetterText`, parsing streamed replies incrementally. Apps register code blocks, tables, images and details blocks; it doesn't depend on Material 3.
+- **`:app`**: a demo gallery with categorized samples, a Markdown demo, a rich text demo, a line-wrapping demo and a live editor.
 
 ## Usage
+
+```kotlin
+// A streamed Markdown reply
+BetterSelectionContainer {
+    Markdown(
+        content = reply,  // may grow as tokens arrive
+        style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+        components = remember {
+            MarkdownComponents(
+                codeBlock = { block -> MyCodeBlock(block) },
+                table = { table -> MyTable(table) },  // render cells with MarkdownInlineContent
+            )
+        },
+    )
+}
+```
 
 ```kotlin
 // Text with inline content
