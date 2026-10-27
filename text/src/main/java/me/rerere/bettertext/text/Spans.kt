@@ -113,8 +113,9 @@ internal class StrutSpan(
         val r = replacement
         if (r != null) {
             r.getSize(workPaint, text, start, end, runFm)
-        } else if (Build.VERSION.SDK_INT >= 29) {
+        } else if (Build.VERSION.SDK_INT >= 33) {
             // Includes fallback fonts, e.g. CJK, which are taller than the primary font.
+            // Older versions use the primary font's metrics.
             workPaint.getFontMetricsInt(text, start, end - start, start, end - start, false, runFm)
         }
         val shift = workPaint.baselineShift
