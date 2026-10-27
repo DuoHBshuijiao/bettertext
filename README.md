@@ -1,5 +1,9 @@
 # BetterText
 
+**English** · [简体中文](README.zh-CN.md)
+
+![BetterText rendering Markdown with math and highlighted code](docs/banner.webp)
+
 A Jetpack Compose library for rendering the replies of LLM chat apps: Markdown with math, inline components and highlighted code, streamed in token by token.
 
 Compose's Text handles this poorly. Inline content must fit a fixed-size placeholder that doesn't follow the text's baseline, a tall formula overlaps the lines around it, and a custom text layout can't take part in selection. Math renderers such as JLatexMath can't wrap a long inline formula across lines the way KaTeX does in a browser. BetterText lays out text itself and ports KaTeX for math, so formulas wrap and line up with the text, lines grow to fit them, and a whole reply can be selected and copied.
@@ -36,4 +40,4 @@ See [AGENTS.md](AGENTS.md) for the architecture and [latex/PORTING.md](latex/POR
 
 ## License
 
-BetterText is released under the [MIT License](LICENSE). The KaTeX code that `:latex` is ported from is also MIT-licensed (see [latex/KATEX_LICENSE](latex/KATEX_LICENSE)). The bundled KaTeX fonts are under the SIL Open Font License.
+BetterText is released under the [MIT License](LICENSE). The KaTeX code that `:latex` is ported from is also MIT-licensed (see [latex/KATEX_LICENSE](latex/KATEX_LICENSE)). The bundled KaTeX fonts are under the SIL Open Font License. The banner's background is Isaac Levitan's *Evening Bells* (1892), which is in the public domain.
