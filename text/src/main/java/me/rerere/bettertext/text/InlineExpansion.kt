@@ -19,14 +19,23 @@ internal class InlineItem(val content: BetterInline, val start: Int, val segment
  *
  * @property offsets maps each offset of the original text (including its end)
  *   to the expanded text. Offsets inside an alt text map to the item's start.
+ * @property endOffsets is [offsets] for the end of a range: it differs only
+ *   before an item with an empty alt text, which a range ending there doesn't cover.
  */
-internal class ExpandedText(val text: String, val offsets: IntArray, val items: List<InlineItem>)
+internal class ExpandedText(
+    val text: String,
+    val offsets: IntArray,
+    val endOffsets: IntArray,
+    val items: List<InlineItem>,
+)
 
 internal fun expandInlines(text: AnnotatedString, inlineContent: Map<String, BetterInline>): ExpandedText {
     val source = text.text
     val annotations = text.getStringAnnotations(INLINE_TAG, 0, source.length).sortedBy { it.start }
     val out = StringBuilder(source.length)
     val offsets = IntArray(source.length + 1)
+    // Where each item with an empty alt text starts, by its offset in the original text.
+    val emptyStarts = HashMap<Int, Int>()
     val items = ArrayList<InlineItem>()
     var pos = 0
     fun copyTo(end: Int) {
@@ -37,7 +46,7 @@ internal fun expandInlines(text: AnnotatedString, inlineContent: Map<String, Bet
     }
     for (annotation in annotations) {
         // Nested or overlapping items keep their alt text.
-        if (annotation.start < pos || annotation.start >= annotation.end) continue
+        if (annotation.start < pos || annotation.start > annotation.end) continue
         val content = inlineContent[annotation.item] ?: continue
         val segments = when (content) {
             is DrawnInline -> content.segmentCount
@@ -48,10 +57,16 @@ internal fun expandInlines(text: AnnotatedString, inlineContent: Map<String, Bet
         for (i in annotation.start until annotation.end) offsets[i] = start
         pos = annotation.end
         if (segments <= 0) continue
+        if (annotation.start == annotation.end) emptyStarts.putIfAbsent(annotation.start, start)
         repeat(segments) { out.append(OBJECT_CHAR) }
         items.add(InlineItem(content, start, segments, source.substring(annotation.start, annotation.end)))
     }
     copyTo(source.length)
     offsets[source.length] = out.length
-    return ExpandedText(out.toString(), offsets, items)
+    val endOffsets = if (emptyStarts.isEmpty()) {
+        offsets
+    } else {
+        offsets.copyOf().also { for ((at, start) in emptyStarts) it[at] = start }
+    }
+    return ExpandedText(out.toString(), offsets, endOffsets, items)
 }

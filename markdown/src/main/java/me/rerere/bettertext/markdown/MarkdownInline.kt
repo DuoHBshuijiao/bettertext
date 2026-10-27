@@ -109,7 +109,7 @@ private class InlineTextBuilder(
         when (node) {
             is MarkdownInline.Text -> appendText(node.text)
             is MarkdownInline.Styled -> builder.withStyle(node.style) { append(node.children) }
-            is MarkdownInline.Code -> builder.withStyle(context.theme.inlineCode) { append(node.code) }
+            is MarkdownInline.Code -> appendCode(node.code)
             is MarkdownInline.Link -> appendLink(node)
             is MarkdownInline.Math -> appendMath(node)
             // Images are split out into their own segments; only the alt text is left here.
@@ -149,6 +149,15 @@ private class InlineTextBuilder(
             linkInteractionListener = context.linkListener,
         )
         builder.withLink(annotation) { append(link.children) }
+    }
+
+    private fun appendCode(code: String) {
+        context.components.inlineCodePrefix?.invoke(scope, code)?.let { prefix ->
+            val id = "markdown:${inlineContent.size}"
+            inlineContent[id] = prefix
+            builder.appendInline(id, altText = "")
+        }
+        builder.withStyle(context.theme.inlineCode) { append(code) }
     }
 
     private fun appendMath(math: MarkdownInline.Math) {

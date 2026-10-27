@@ -49,7 +49,7 @@ fun solve(a: Double, b: Double, c: Double): List<Double> {
 
 </details>
 
-<span style="color: #e53935">HTML 里的颜色</span>和 <u>下划线</u> 也能正常显示。
+<span style="color: #e53935">HTML 里的颜色</span>和 <u>下划线</u> 也能正常显示。行内代码里的颜色 `#e53935`、`#1E88E5` 和 `rgb(67, 160, 71)` 前面有色块。
 """.trimIndent()
 
 /** A message of the long conversation demo; user messages are plain text, replies are Markdown. */

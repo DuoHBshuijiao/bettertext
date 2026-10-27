@@ -56,4 +56,21 @@ class InlineExpansionTest {
         assertEquals("ab", expanded.text)
         assertEquals(emptyList<InlineItem>(), expanded.items)
     }
+
+    @Test
+    fun keepsItemsWithEmptyAltText() {
+        val swatch = Segments(1)
+        val text = buildAnnotatedString {
+            append("a")
+            appendInline("swatch", "")
+            append("bc")
+        }
+        val expanded = expandInlines(text, mapOf("swatch" to swatch))
+        assertEquals("a\uFFFCbc", expanded.text)
+        assertEquals(listOf(1), expanded.items.map { it.start })
+        assertEquals("", expanded.items[0].altText)
+        // A range starting at the item begins after it; one ending there stops before it.
+        assertEquals(listOf(0, 2, 3, 4), expanded.offsets.toList())
+        assertEquals(listOf(0, 1, 3, 4), expanded.endOffsets.toList())
+    }
 }

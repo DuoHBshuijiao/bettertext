@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import me.rerere.bettertext.gallery.highlight.CodeCard
+import me.rerere.bettertext.gallery.text.ColorSwatch
 import me.rerere.bettertext.latex.LatexBlock
 import me.rerere.bettertext.latex.LatexInline
 import me.rerere.bettertext.markdown.MarkdownBlock
@@ -75,7 +77,28 @@ internal val materialMarkdownComponents = MarkdownComponents(
     table = { MaterialTable(it) },
     image = { image, _ -> ImagePlaceholder(image.alt ?: image.url) },
     details = { block, summary, content -> CollapsibleDetails(block.open, summary, content) },
+    inlineCodePrefix = { code -> parseColorCode(code)?.let { ColorSwatch(it) } },
 )
+
+private val HEX_COLOR = Regex("#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})")
+private val RGB_COLOR = Regex("""rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)""")
+
+/** `#RGB`, `#RRGGBB`, `#RRGGBBAA` or `rgb(r, g, b)`; null for any other code. */
+private fun parseColorCode(code: String): Color? {
+    HEX_COLOR.matchEntire(code)?.let { match ->
+        var hex = match.groupValues[1]
+        if (hex.length == 3) hex = hex.map { "$it$it" }.joinToString("")
+        if (hex.length == 6) hex += "FF"
+        val rgba = hex.toLong(16)
+        return Color(((rgba ushr 8) or (rgba shl 24)).toInt())
+    }
+    RGB_COLOR.matchEntire(code)?.let { match ->
+        val (r, g, b) = match.groupValues.drop(1).map { it.toInt() }
+        if (r > 255 || g > 255 || b > 255) return null
+        return Color(r, g, b)
+    }
+    return null
+}
 
 /** A display formula in the size and color of the surrounding text. */
 @Composable

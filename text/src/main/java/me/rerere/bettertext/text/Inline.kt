@@ -61,9 +61,10 @@ class ComposableInline(
 /**
  * Appends the inline item [id], resolved through `inlineContent` of [BetterText].
  * [altText] stands for the item in semantics and is shown when [id] is missing.
+ * An empty [altText] makes a decoration, such as a swatch before a color code:
+ * it's drawn but copies as nothing, and isn't styled by spans that end where it is.
  */
 fun AnnotatedString.Builder.appendInline(id: String, altText: String = "\uFFFC") {
-    require(altText.isNotEmpty()) { "altText must not be empty" }
     pushStringAnnotation(INLINE_TAG, id)
     append(altText)
     pop()

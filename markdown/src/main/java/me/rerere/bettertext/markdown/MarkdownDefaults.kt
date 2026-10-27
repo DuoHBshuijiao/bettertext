@@ -83,6 +83,11 @@ class MarkdownComponents(
     val inlineMath: (MarkdownInlineScope.(formula: String) -> BetterInline?)? = null,
     /** Renders some links differently, e.g. as citation tags; null renders a normal link. */
     val inlineLink: (MarkdownInlineScope.(link: MarkdownInline.Link) -> BetterInline?)? = null,
+    /**
+     * An item drawn before some inline code, e.g. a swatch before a color code. The code stays
+     * text with [MarkdownTheme.inlineCode], and the item copies as nothing.
+     */
+    val inlineCodePrefix: (MarkdownInlineScope.(code: String) -> BetterInline?)? = null,
 )
 
 object MarkdownDefaults {

@@ -97,13 +97,13 @@ internal class PreparedText(
 
             val links = text.getLinkAnnotations(0, text.length).mapNotNull { range ->
                 val start = expanded.offsets[range.start]
-                val end = expanded.offsets[range.end]
+                val end = expanded.endOffsets[range.end]
                 if (start < end) LinkRange(range.item, start, end) else null
             }
             // Span styles, then link styles over them, in offsets of the expanded text.
             val styles = text.spanStyles.mapNotNull { range ->
                 val start = expanded.offsets[range.start]
-                val end = expanded.offsets[range.end]
+                val end = expanded.endOffsets[range.end]
                 if (start < end) AnnotatedString.Range(range.item, start, end) else null
             } + links.mapNotNull { link -> link.link.styles?.style?.let { AnnotatedString.Range(it, link.start, link.end) } }
             for (range in styles) applySpanStyle(spanned, range.item, range.start, range.end, density)
