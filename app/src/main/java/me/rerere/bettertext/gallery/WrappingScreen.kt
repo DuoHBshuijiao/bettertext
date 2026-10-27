@@ -2,7 +2,6 @@ package me.rerere.bettertext.gallery
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -30,11 +29,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
+import me.rerere.bettertext.components.Frame
+import me.rerere.bettertext.components.GalleryScaffold
+import me.rerere.bettertext.components.Heading
 import me.rerere.bettertext.latex.Latex
 import me.rerere.bettertext.latex.LatexChunk
 import me.rerere.bettertext.latex.LatexSettings
 import me.rerere.bettertext.latex.rememberLatexLayout
-import kotlin.math.roundToInt
 
 /** Shows how formulas break into lines as the available width changes. */
 @Composable
@@ -82,20 +84,6 @@ internal fun WrappingScreen(onBack: () -> Unit) {
             }
         }
     }
-}
-
-@Composable
-internal fun Heading(title: String, description: String) {
-    Column(Modifier.padding(top = 8.dp)) {
-        Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
-        Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-/** A bordered box of the given width, so the available space is visible. */
-@Composable
-internal fun Frame(width: Dp, content: @Composable () -> Unit) {
-    Box(Modifier.width(width).border(1.dp, MaterialTheme.colorScheme.outlineVariant)) { content() }
 }
 
 @Composable

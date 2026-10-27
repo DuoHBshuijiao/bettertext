@@ -43,6 +43,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
+import me.rerere.bettertext.components.Frame
+import me.rerere.bettertext.components.GalleryScaffold
+import me.rerere.bettertext.components.Heading
 import me.rerere.bettertext.latex.DefaultMathScale
 import me.rerere.bettertext.latex.Latex
 import me.rerere.bettertext.latex.LatexLayout
@@ -53,7 +57,6 @@ import me.rerere.bettertext.text.BetterSelectionContainer
 import me.rerere.bettertext.text.BetterText
 import me.rerere.bettertext.text.ComposableInline
 import me.rerere.bettertext.text.InlineAlign
-import kotlin.math.roundToInt
 
 private val citations = mapOf(
     1 to "issuetracker.google.com/issues/427657659 · The line height of the text does not take the font size into account",

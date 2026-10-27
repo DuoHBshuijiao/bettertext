@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
+import me.rerere.bettertext.components.GalleryScaffold
 
 @Composable
 internal fun HomeScreen(onNavigate: (NavKey) -> Unit) {
@@ -37,6 +38,14 @@ internal fun HomeScreen(onNavigate: (NavKey) -> Unit) {
                     description = "输入 LaTeX 实时预览，可切换块级、leqno、fleqn 和字号",
                     preview = Sample("""\LaTeX\ \text{playground}"""),
                     onClick = { onNavigate(PlaygroundRoute()) },
+                )
+            }
+            item {
+                EntryCard(
+                    title = "Markdown",
+                    description = "渲染一段 AI 回复：标题、列表、公式、代码、表格、引用，可模拟流式输出",
+                    preview = Sample("""\Delta = b^2 - 4ac"""),
+                    onClick = { onNavigate(MarkdownRoute) },
                 )
             }
             item {

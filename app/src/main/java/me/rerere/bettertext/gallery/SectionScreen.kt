@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import me.rerere.bettertext.components.GalleryScaffold
 import me.rerere.bettertext.latex.Latex
 import me.rerere.bettertext.latex.LatexBlock
 import me.rerere.bettertext.latex.rememberLatexLayout

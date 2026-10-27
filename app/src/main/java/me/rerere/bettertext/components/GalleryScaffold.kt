@@ -1,4 +1,4 @@
-package me.rerere.bettertext.gallery
+package me.rerere.bettertext.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api

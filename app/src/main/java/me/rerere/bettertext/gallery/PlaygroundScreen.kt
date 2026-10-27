@@ -32,11 +32,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
+import me.rerere.bettertext.components.GalleryScaffold
 import me.rerere.bettertext.latex.Latex
 import me.rerere.bettertext.latex.LatexBlock
 import me.rerere.bettertext.latex.LatexSettings
 import me.rerere.bettertext.latex.rememberLatexLayout
-import kotlin.math.roundToInt
 
 private const val DEFAULT_LATEX = """f(x) = \int_{-\infty}^\infty \hat f(\xi)\,e^{2 \pi i \xi x} \,d\xi"""
 

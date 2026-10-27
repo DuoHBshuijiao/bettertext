@@ -11,6 +11,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import me.rerere.bettertext.gallery.HomeRoute
 import me.rerere.bettertext.gallery.HomeScreen
+import me.rerere.bettertext.gallery.MarkdownRoute
+import me.rerere.bettertext.gallery.MarkdownScreen
 import me.rerere.bettertext.gallery.PlaygroundRoute
 import me.rerere.bettertext.gallery.PlaygroundScreen
 import me.rerere.bettertext.gallery.RichTextRoute
@@ -52,6 +54,7 @@ private fun GalleryApp() {
             }
             entry<WrappingRoute> { WrappingScreen(onBack = back) }
             entry<RichTextRoute> { RichTextScreen(onBack = back) }
+            entry<MarkdownRoute> { MarkdownScreen(onBack = back) }
             entry<PlaygroundRoute> { route -> PlaygroundScreen(route, onBack = back) }
         },
     )

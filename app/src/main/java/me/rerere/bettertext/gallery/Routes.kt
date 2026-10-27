@@ -16,6 +16,9 @@ internal data object WrappingRoute : NavKey
 @Serializable
 internal data object RichTextRoute : NavKey
 
+@Serializable
+internal data object MarkdownRoute : NavKey
+
 /** The editor, prefilled with `sections[section].samples[sample]` when both are valid. */
 @Serializable
 internal data class PlaygroundRoute(val section: Int = -1, val sample: Int = -1) : NavKey {
