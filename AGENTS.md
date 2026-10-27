@@ -2,10 +2,11 @@
 
 ## Project
 
-BetterText is a Compose library that replaces `BasicText` to improve rich markdown rendering, especially inline formulas and other inline components. The long-term plan is a text layer built on `BasicText`: inline content is measured first, one placeholder is created per unbreakable math chunk with U+200B between chunks so the line breaker can wrap long formulas, and baselines are corrected. That layer doesn't exist yet. Today the repo has:
+BetterText is a Compose library that replaces `BasicText` to improve rich markdown rendering, especially inline formulas and other inline components. It lays out text itself with `StaticLayout` instead of building on `BasicText` and `SelectionContainer`, because of two Compose issues: a uniform `lineHeight` makes tall inline content overlap adjacent lines ([427657659](https://issuetracker.google.com/issues/427657659)), and `SelectionRegistrar` is internal ([233102278](https://issuetracker.google.com/issues/233102278)). Switch to the built-in APIs once those are fixed.
 
 - `:latex`: a Kotlin port of the KaTeX 0.19.1 parser and HTML builder. It renders LaTeX inline and in display mode on an Android `Canvas` with the bundled KaTeX fonts.
-- `:app`: a demo gallery built with Navigation 3. It has categorized samples, a wrapping and mixed-text demo, and a live editor. Samples live in `gallery/Samples.kt`, and `GallerySamplesTest` checks that they all parse.
+- `:text`: the `BetterText` composable. Selection (a `BetterSelectionContainer` across paragraphs) and the markdown mapping are not written yet.
+- `:app`: a demo gallery built with Navigation 3. It has categorized samples, a rich text demo, a wrapping demo, and a live editor. Samples live in `gallery/Samples.kt`, and `GallerySamplesTest` checks that they all parse. `gallery/DemoMarkup.kt` is a tiny markup converter that stands in for the markdown layer.
 
 ## Commands
 
@@ -13,6 +14,7 @@ BetterText is a Compose library that replaces `BasicText` to improve rich markdo
 ./gradlew :latex:compileDebugKotlin                       # compile the library
 ./gradlew :latex:testDebugUnitTest                        # JVM unit tests (all)
 ./gradlew :latex:testDebugUnitTest --tests '*MiscTest*'   # one class (append .methodName for one test)
+./gradlew :text:testDebugUnitTest                         # text layer unit tests
 ./gradlew :app:installDebug                               # install the demo on a device/emulator
 ```
 
@@ -51,3 +53,13 @@ KaTeX leaves widths and horizontal layout to the browser's CSS. This port comput
 - No strict mode or trust checks.
 - `\includegraphics` and the `CD` environment are not supported.
 - A tall tag makes its array row taller; KaTeX lets it overflow.
+
+## Architecture of `:text`
+
+Package: `me.rerere.bettertext.text`. Only the inline expansion is unit-tested; layout needs a device, so check changes in the gallery's rich text screen.
+
+1. **Inline items**: `appendInline(id, altText)` marks alt text with a string annotation; `inlineContent` maps ids to a `BetterInline`. A `DrawnInline` (`LatexInline`, or a custom one such as the gallery's `ColorSwatch`) is measured and drawn with the paint of the surrounding text, so it follows its size and color, and may have several segments (one per LaTeX chunk) with line breaks allowed between them. A `ComposableInline` (e.g. a citation tag) is measured as a child of the `Layout` and placed over its span.
+2. **Prepare** (`TextLayout.kt`, `PreparedText`): `expandInlines` replaces each item's alt text with one U+FFFC per segment and maps the original offsets. `SpanStyle`s become Android spans. Font attributes are flattened into one resolved typeface per range, as Compose does. Inline items become `ReplacementSpan`s that report their exact ascent/descent.
+3. **Line height**: `StrutSpan` (a `LineHeightSpan`) makes each line at least `lineHeight` tall, with CSS-style half-leading, and lets taller lines grow. It measures each line's extent itself, because `StaticLayout` seeds a line that starts mid-run with the metrics the span returned for the previous line.
+4. **Layout** (`TextLayoutCache`): the width is the text's desired width clamped to the constraints, like Compose. `ReplacementSpan.draw` only gets metric-affecting spans applied, so inline items look up `ForegroundColorSpan` themselves.
+

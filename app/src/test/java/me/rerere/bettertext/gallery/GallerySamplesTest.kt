@@ -28,7 +28,8 @@ class GallerySamplesTest {
     @Test
     fun demoFormulasParse() {
         val formulas = wrapSamples.map { it.second } +
-            mixedParagraph.filterIndexed { i, _ -> i % 2 == 1 } +
+            richTextSamples.flatMap { markupFormulas(it.markup) } +
+            listOf(STYLED_PLAIN, STYLED_LARGE, STYLED_COLORED).flatMap(::markupFormulas) +
             """\LaTeX\ \text{playground}""" + """a + b = c \allowbreak + d"""
         val failures = formulas.mapNotNull { latex -> LatexLayout.create(latex).error?.let { "$latex -> ${it.message}" } }
         assertEquals(emptyList<String>(), failures)

@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "bettertext"
 include(":app")
 include(":latex")
+include(":text")

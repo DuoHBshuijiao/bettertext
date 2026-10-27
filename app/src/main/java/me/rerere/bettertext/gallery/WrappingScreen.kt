@@ -44,7 +44,7 @@ internal fun WrappingScreen(onBack: () -> Unit) {
     var leqno by rememberSaveable { mutableStateOf(false) }
     val fontSize = MaterialTheme.typography.bodyLarge.fontSize
 
-    GalleryScaffold(title = "换行与混排", onBack = onBack) { padding ->
+    GalleryScaffold(title = "换行", onBack = onBack) { padding ->
         BoxWithConstraints(Modifier.fillMaxSize().padding(padding)) {
             val width = (maxWidth - 32.dp) * fraction
             Column(
@@ -67,7 +67,7 @@ internal fun WrappingScreen(onBack: () -> Unit) {
                     Latex(latex, fontSize = fontSize, color = MaterialTheme.colorScheme.onSurface)
                 }
 
-                Heading("断点（chunk）", "每个方框是一个不可再分的 chunk，BetterText 会为每个 chunk 生成一个占位符")
+                Heading("断点（chunk）", "每个方框是一个不可再分的 chunk，BetterText 在 chunk 之间换行")
                 ChunkFlow(latex, width, fontSize)
 
                 Heading("块级公式与编号", "放不下时编号移到下一行；leqno 时编号在左侧，移到上一行")
@@ -79,16 +79,13 @@ internal fun WrappingScreen(onBack: () -> Unit) {
                 Frame(width) {
                     Latex(tagged, Modifier.fillMaxWidth(), fontSize = fontSize, color = MaterialTheme.colorScheme.onSurface)
                 }
-
-                Heading("文字混排预览", "用 FlowRow 模拟 BetterText：文字和公式 chunk 按基线对齐，一起换行")
-                MixedParagraph(width, fontSize)
             }
         }
     }
 }
 
 @Composable
-private fun Heading(title: String, description: String) {
+internal fun Heading(title: String, description: String) {
     Column(Modifier.padding(top = 8.dp)) {
         Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
         Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -97,7 +94,7 @@ private fun Heading(title: String, description: String) {
 
 /** A bordered box of the given width, so the available space is visible. */
 @Composable
-private fun Frame(width: Dp, content: @Composable () -> Unit) {
+internal fun Frame(width: Dp, content: @Composable () -> Unit) {
     Box(Modifier.width(width).border(1.dp, MaterialTheme.colorScheme.outlineVariant)) { content() }
 }
 
@@ -127,25 +124,4 @@ private fun ChunkFlow(latex: String, width: Dp, fontSize: TextUnit) {
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
-}
-
-@Composable
-private fun MixedParagraph(width: Dp, fontSize: TextUnit) {
-    val color = MaterialTheme.colorScheme.onSurface
-    val style = MaterialTheme.typography.bodyLarge
-    Frame(width) {
-        FlowRow(Modifier.fillMaxWidth().padding(4.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            mixedParagraph.forEachIndexed { i, piece ->
-                if (i % 2 == 0) {
-                    // One item per character so CJK text can break anywhere.
-                    for (ch in piece) Text(ch.toString(), Modifier.alignByBaseline(), style = style, color = color)
-                } else {
-                    val layout = rememberLatexLayout(piece)
-                    repeat(layout.chunkCount) { c ->
-                        LatexChunk(layout, c, Modifier.alignByBaseline(), fontSize = fontSize, color = color)
-                    }
-                }
-            }
-        }
-    }
 }

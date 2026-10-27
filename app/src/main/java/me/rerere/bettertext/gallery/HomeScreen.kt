@@ -41,8 +41,16 @@ internal fun HomeScreen(onNavigate: (NavKey) -> Unit) {
             }
             item {
                 EntryCard(
-                    title = "换行与混排",
-                    description = "拖动宽度观察行内公式断行、chunk 划分、编号位置与文字混排",
+                    title = "富文本",
+                    description = "BetterText 混排文字、公式、颜色方块和引用标记，并与 Compose Text 对比",
+                    preview = Sample("""x_{1,2} = \frac{-b \pm \sqrt{\Delta}}{2a}"""),
+                    onClick = { onNavigate(RichTextRoute) },
+                )
+            }
+            item {
+                EntryCard(
+                    title = "换行",
+                    description = "拖动宽度观察行内公式断行、chunk 划分和编号位置",
                     preview = Sample("""a + b = c \allowbreak + d"""),
                     onClick = { onNavigate(WrappingRoute) },
                 )

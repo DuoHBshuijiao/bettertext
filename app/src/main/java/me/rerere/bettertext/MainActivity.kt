@@ -13,6 +13,8 @@ import me.rerere.bettertext.gallery.HomeRoute
 import me.rerere.bettertext.gallery.HomeScreen
 import me.rerere.bettertext.gallery.PlaygroundRoute
 import me.rerere.bettertext.gallery.PlaygroundScreen
+import me.rerere.bettertext.gallery.RichTextRoute
+import me.rerere.bettertext.gallery.RichTextScreen
 import me.rerere.bettertext.gallery.SectionRoute
 import me.rerere.bettertext.gallery.SectionScreen
 import me.rerere.bettertext.gallery.WrappingRoute
@@ -49,6 +51,7 @@ private fun GalleryApp() {
                 )
             }
             entry<WrappingRoute> { WrappingScreen(onBack = back) }
+            entry<RichTextRoute> { RichTextScreen(onBack = back) }
             entry<PlaygroundRoute> { route -> PlaygroundScreen(route, onBack = back) }
         },
     )

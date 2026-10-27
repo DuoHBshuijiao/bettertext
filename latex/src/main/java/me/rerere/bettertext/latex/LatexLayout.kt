@@ -1,5 +1,6 @@
 package me.rerere.bettertext.latex
 
+import android.content.Context
 import me.rerere.bettertext.latex.layout.Box
 import me.rerere.bettertext.latex.layout.GlyphMeasurer
 import me.rerere.bettertext.latex.layout.Options
@@ -11,6 +12,7 @@ import me.rerere.bettertext.latex.layout.makeSymbol
 import me.rerere.bettertext.latex.layout.CssColor
 import me.rerere.bettertext.latex.parse.Mode
 import me.rerere.bettertext.latex.parse.parseTree
+import me.rerere.bettertext.latex.render.MathTypefaces
 
 /**
  * A laid-out formula. All dimensions are in em of the font size it is drawn at.
@@ -57,6 +59,10 @@ class LatexLayout internal constructor(
          */
         fun create(latex: String, settings: LatexSettings = LatexSettings()): LatexLayout =
             create(latex, settings, GlyphMeasurer.Approximate)
+
+        /** Like [create], but measures glyphs with the bundled fonts. Safe to call off the main thread. */
+        fun create(latex: String, settings: LatexSettings, context: Context): LatexLayout =
+            create(latex, settings, MathTypefaces.get(context).measurer)
 
         internal fun create(latex: String, settings: LatexSettings, measurer: GlyphMeasurer): LatexLayout {
             val options = Options(

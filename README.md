@@ -7,10 +7,50 @@ Compose's `Text` makes inline formulas and other inline components awkward, and 
 ## Status
 
 - **`:latex`**: ready. A Kotlin port of KaTeX 0.19.1's parser and layout engine that draws on an Android `Canvas` with the bundled KaTeX fonts. It supports KaTeX's functions, environments, macros and symbols, except `\includegraphics` and `CD`.
-- **Text layer**: not started. It will be a `BasicText` replacement that places math chunks inline with text.
-- **`:app`**: a demo gallery with categorized samples, a line-wrapping demo and a live editor.
+- **`:text`**: in progress. `BetterText` lays out text with inline formulas, custom drawn items and composables such as citation tags; lines grow to fit tall items. Because of the [Compose limitations](#compose-limitations) below, it lays out text itself; its own selection container and the markdown mapping are not written yet.
+- **`:app`**: a demo gallery with categorized samples, a rich text demo, a line-wrapping demo and a live editor.
 
 ## Usage
+
+```kotlin
+// Text with inline content
+val text = buildAnnotatedString {
+    append("The roots are ")
+    appendInline("roots", altText = "\$x_{1,2}\$")
+    append(" and the accent color is ")
+    appendInline("swatch", altText = "#6750A4")
+    append(" #6750A4")
+    appendInline("cite", altText = "[1]")
+}
+val roots = rememberLatexInline("""x_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}""")
+// Remember the map: a new one makes BetterText prepare the text again.
+val inlineContent = remember(roots) {
+    mapOf(
+        "roots" to roots,
+        "swatch" to Swatch(Color(0xFF6750A4).toArgb()),
+        "cite" to ComposableInline(InlineAlign.Center) { CitationChip(1) },
+    )
+}
+BetterText(text, style = MaterialTheme.typography.bodyLarge, inlineContent = inlineContent)
+
+// A custom inline drawn with the text, sized by the surrounding font
+class Swatch(private val argb: Int) : DrawnInline() {
+    override fun measure(segment: Int, paint: Paint, metrics: InlineMetrics) {
+        val size = paint.textSize * 0.8f
+        val center = (paint.ascent() + paint.descent()) / 2
+        metrics.width = size
+        metrics.ascent = size / 2 - center
+        metrics.descent = size / 2 + center
+    }
+
+    override fun draw(segment: Int, canvas: Canvas, x: Float, baseline: Float, paint: Paint) {
+        val size = paint.textSize * 0.8f
+        val top = baseline + (paint.ascent() + paint.descent()) / 2 - size / 2
+        paint.color = argb
+        canvas.drawRect(x, top, x + size, top + size, paint)
+    }
+}
+```
 
 ```kotlin
 // Inline: wraps after relations and binary operators when space runs out
@@ -30,6 +70,15 @@ LatexBlock(layout)
 Parse errors never throw. The source is shown in red, and `LatexLayout.error` describes the problem.
 
 To place math inside your own text layout, split a formula into unbreakable chunks with `LatexLayout.chunkCount` and `chunkWidth`/`chunkHeight`/`chunkDepth`, then draw each chunk with `LatexChunk`.
+
+## Compose limitations
+
+Two open Compose issues prevent the text layer from building on `BasicText` and `SelectionContainer`:
+
+- [427657659](https://issuetracker.google.com/issues/427657659): when `lineHeight` is set, every line gets the same height. A tall inline formula, or a span with a larger font, overlaps the lines next to it. Material 3 typography always sets `lineHeight`.
+- [233102278](https://issuetracker.google.com/issues/233102278): `SelectionRegistrar` and `SelectionManager` are internal, so a custom text layout can't take part in `SelectionContainer`.
+
+Until they are fixed, BetterText works around them with its own layout and selection. Once Compose fixes them, BetterText will switch to the built-in APIs.
 
 ## Building
 
