@@ -4,92 +4,14 @@ A Jetpack Compose library for rich text with inline math, aimed at markdown rend
 
 Compose's `Text` makes inline formulas and other inline components awkward, and existing math renderers such as JLatexMath can't wrap a long inline formula across lines the way KaTeX does in a browser. BetterText addresses both.
 
-## Status
+## Features
 
-- **`:latex`**: ready. A Kotlin port of KaTeX 0.19.1's parser and layout engine that draws on an Android `Canvas` with the bundled KaTeX fonts. It supports KaTeX's functions, environments, macros and symbols, except `\includegraphics` and `CD`.
-- **`:text`**: in progress. `BetterText` lays out text with inline formulas, custom drawn items and composables such as citation tags; lines grow to fit tall items. Because of the [Compose limitations](#compose-limitations) below, it lays out text itself; `BetterSelectionContainer` selects across paragraphs and copies formulas as their LaTeX source.
-- **`:markdown`**: renders Markdown (GFM, math, embedded HTML) with `BetterText`, parsing streamed replies incrementally. Apps register code blocks, tables, images and details blocks; it doesn't depend on Material 3.
-- **`:highlight`**: syntax highlighting for code blocks, a pure Kotlin port of highlight.js 11.11.1 covering 30 languages. It produces an `AnnotatedString`, so highlighted code can be selected with the rest of a reply.
-- **`:app`**: a demo gallery with one tab per module: LaTeX (categorized samples, a line-wrapping demo and a live editor), rich text, Markdown and code highlighting.
-
-## Usage
-
-```kotlin
-// A streamed Markdown reply
-BetterSelectionContainer {
-    Markdown(
-        content = reply,  // may grow as tokens arrive
-        style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
-        components = remember {
-            MarkdownComponents(
-                codeBlock = { block -> MyCodeBlock(block) },
-                table = { table -> MyTable(table) },  // render cells with MarkdownInlineContent
-            )
-        },
-    )
-}
-```
-
-```kotlin
-// Text with inline content
-val text = buildAnnotatedString {
-    append("The roots are ")
-    appendInline("roots", altText = "\$x_{1,2}\$")
-    append(" and the accent color is ")
-    appendInline("swatch", altText = "#6750A4")
-    append(" #6750A4")
-    appendInline("cite", altText = "[1]")
-}
-val roots = rememberLatexInline("""x_{1,2} = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}""")
-// Remember the map: a new one makes BetterText prepare the text again.
-val inlineContent = remember(roots) {
-    mapOf(
-        "roots" to roots,
-        "swatch" to Swatch(Color(0xFF6750A4).toArgb()),
-        "cite" to ComposableInline(InlineAlign.Center) { CitationChip(1) },
-    )
-}
-BetterSelectionContainer {
-    BetterText(text, style = MaterialTheme.typography.bodyLarge, inlineContent = inlineContent)
-}
-
-// A custom inline drawn with the text, sized by the surrounding font
-class Swatch(private val argb: Int) : DrawnInline() {
-    override fun measure(segment: Int, paint: Paint, metrics: InlineMetrics) {
-        val size = paint.textSize * 0.8f
-        val center = (paint.ascent() + paint.descent()) / 2
-        metrics.width = size
-        metrics.ascent = size / 2 - center
-        metrics.descent = size / 2 + center
-    }
-
-    override fun draw(segment: Int, canvas: Canvas, x: Float, baseline: Float, paint: Paint) {
-        val size = paint.textSize * 0.8f
-        val top = baseline + (paint.ascent() + paint.descent()) / 2 - size / 2
-        paint.color = argb
-        canvas.drawRect(x, top, x + size, top + size, paint)
-    }
-}
-```
-
-```kotlin
-// Inline: wraps after relations and binary operators when space runs out
-Latex("a^2 + b^2 = c^2", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
-
-// Display: centered, scrolls horizontally when too wide
-LatexBlock("""\sum_{i=1}^n i = \frac{n(n+1)}{2} \tag{1}""")
-
-// Custom settings
-val layout = rememberLatexLayout(
-    """f: \RR^n \to \RR""",
-    LatexSettings(displayMode = true, macros = mapOf("\\RR" to "\\mathbb{R}")),
-)
-LatexBlock(layout)
-```
-
-Parse errors never throw. The source is shown in red, and `LatexLayout.error` describes the problem.
-
-To place math inside your own text layout, split a formula into unbreakable chunks with `LatexLayout.chunkCount` and `chunkWidth`/`chunkHeight`/`chunkDepth`, then draw each chunk with `LatexChunk`.
+- **Inline math that wraps like KaTeX.** A Kotlin port of KaTeX 0.19.1 draws formulas with the KaTeX fonts and supports its functions, environments, macros and symbols. A long inline formula breaks after relations and binary operators, as in a browser.
+- **Text with inline content.** Formulas, custom drawn items and composables such as citation tags sit in the text on its baseline. Lines grow to fit tall items instead of overlapping their neighbors.
+- **Selection across paragraphs.** Text can be selected across paragraphs and blocks, and formulas copy as their LaTeX source.
+- **Streaming Markdown.** Markdown with GFM, math and embedded HTML renders as a reply streams in. Only the changed end is parsed again, and unfinished syntax such as an unclosed bold or formula is closed or hidden instead of flashing as raw text.
+- **Components from your app.** Code blocks, tables, images and details blocks come from the app, so the library doesn't depend on Material 3.
+- **Syntax highlighting.** A Kotlin port of highlight.js 11.11.1 highlights 30 languages, and highlighted code can be selected with the rest of a reply.
 
 ## Compose limitations
 
@@ -108,6 +30,8 @@ Requires JDK 25.
 ./gradlew :latex:testDebugUnitTest   # unit tests (run on the JVM)
 ./gradlew :app:installDebug          # install the demo
 ```
+
+The demo app (`:app`) has one tab per module: LaTeX (categorized samples, a line-wrapping demo and a live editor), rich text, Markdown and code highlighting.
 
 See [AGENTS.md](AGENTS.md) for the architecture and [latex/PORTING.md](latex/PORTING.md) for the porting conventions.
 
