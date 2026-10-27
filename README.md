@@ -16,6 +16,32 @@ Compose's Text handles this poorly. Inline content must fit a fixed-size placeho
 - **Components from your app.** Code blocks, tables, images and details blocks come from the app, so the library doesn't depend on Material 3.
 - **Syntax highlighting.** A Kotlin port of highlight.js 11.11.1 highlights 30 languages.
 
+## Installation
+
+The modules are published on [JitPack](https://jitpack.io/#re-ovo/bettertext). Add the repository in `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
+}
+```
+
+Then add the BOM, with a release tag or a commit hash as the version, and the modules you need:
+
+```kotlin
+dependencies {
+    implementation(platform("com.github.re-ovo.bettertext:bom:<version>"))
+    implementation("com.github.re-ovo.bettertext:markdown")  // Markdown, includes text and latex
+    implementation("com.github.re-ovo.bettertext:text")      // BetterText and selection, includes latex
+    implementation("com.github.re-ovo.bettertext:latex")     // LaTeX only
+    implementation("com.github.re-ovo.bettertext:highlight") // syntax highlighting
+}
+```
+
 ## Compose limitations
 
 Two open Compose issues prevent the text layer from building on `BasicText` and `SelectionContainer`:
