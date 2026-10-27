@@ -7,7 +7,7 @@ Compose's `Text` makes inline formulas and other inline components awkward, and 
 ## Status
 
 - **`:latex`**: ready. A Kotlin port of KaTeX 0.19.1's parser and layout engine that draws on an Android `Canvas` with the bundled KaTeX fonts. It supports KaTeX's functions, environments, macros and symbols, except `\includegraphics` and `CD`.
-- **`:text`**: in progress. `BetterText` lays out text with inline formulas, custom drawn items and composables such as citation tags; lines grow to fit tall items. Because of the [Compose limitations](#compose-limitations) below, it lays out text itself; its own selection container and the markdown mapping are not written yet.
+- **`:text`**: in progress. `BetterText` lays out text with inline formulas, custom drawn items and composables such as citation tags; lines grow to fit tall items. Because of the [Compose limitations](#compose-limitations) below, it lays out text itself; `BetterSelectionContainer` selects across paragraphs and copies formulas as their LaTeX source. The markdown mapping is not written yet.
 - **`:app`**: a demo gallery with categorized samples, a rich text demo, a line-wrapping demo and a live editor.
 
 ## Usage
@@ -31,7 +31,9 @@ val inlineContent = remember(roots) {
         "cite" to ComposableInline(InlineAlign.Center) { CitationChip(1) },
     )
 }
-BetterText(text, style = MaterialTheme.typography.bodyLarge, inlineContent = inlineContent)
+BetterSelectionContainer {
+    BetterText(text, style = MaterialTheme.typography.bodyLarge, inlineContent = inlineContent)
+}
 
 // A custom inline drawn with the text, sized by the surrounding font
 class Swatch(private val argb: Int) : DrawnInline() {

@@ -1,5 +1,6 @@
 package me.rerere.bettertext.text
 
+import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
@@ -42,6 +43,8 @@ private const val SPAN_FLAGS = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
  */
 internal class PreparedText(
     val spanned: Spanned,
+    /** Inline items in text order; offsets are in [spanned]. */
+    val items: List<InlineItem>,
     val paint: TextPaint,
     val alignment: Layout.Alignment,
     val justify: Boolean,
@@ -128,6 +131,7 @@ internal class PreparedText(
             }
             return PreparedText(
                 spanned,
+                expanded.items,
                 paint,
                 alignment,
                 style.textAlign == TextAlign.Justify,
@@ -250,11 +254,11 @@ internal class TextLayoutCache(private val prepared: PreparedText) {
             .setTextDirection(TextDirectionHeuristics.FIRSTSTRONG_LTR)
             .setIncludePad(false)
             .setLineSpacing(0f, 1f)
-            .setBreakStrategy(Layout.BREAK_STRATEGY_SIMPLE)
-            .setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE)
             .setMaxLines(maxLines)
         if (maxLines != Int.MAX_VALUE) builder.setEllipsize(TextUtils.TruncateAt.END)
         if (prepared.justify && Build.VERSION.SDK_INT >= 26) {
+            // Lint wants LineBreaker's constant, which has the same value but needs API 29.
+            @SuppressLint("WrongConstant")
             builder.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD)
         }
         if (Build.VERSION.SDK_INT >= 28) builder.setUseLineSpacingFromFallbacks(true)

@@ -62,7 +62,7 @@ class ComposableInline(
  * Appends the inline item [id], resolved through `inlineContent` of [BetterText].
  * [altText] stands for the item in semantics and is shown when [id] is missing.
  */
-fun AnnotatedString.Builder.appendInline(id: String, altText: String = "￼") {
+fun AnnotatedString.Builder.appendInline(id: String, altText: String = "\uFFFC") {
     require(altText.isNotEmpty()) { "altText must not be empty" }
     pushStringAnnotation(INLINE_TAG, id)
     append(altText)

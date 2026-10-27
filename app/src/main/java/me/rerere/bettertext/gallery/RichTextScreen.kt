@@ -49,6 +49,7 @@ import me.rerere.bettertext.latex.LatexLayout
 import me.rerere.bettertext.latex.LatexSettings
 import me.rerere.bettertext.latex.rememberLatexPainter
 import me.rerere.bettertext.text.BetterInline
+import me.rerere.bettertext.text.BetterSelectionContainer
 import me.rerere.bettertext.text.BetterText
 import me.rerere.bettertext.text.ComposableInline
 import me.rerere.bettertext.text.InlineAlign
@@ -94,34 +95,43 @@ internal fun RichTextScreen(onBack: () -> Unit) {
                     Switch(checked = useLineHeight, onCheckedChange = { useLineHeight = it })
                 }
 
-                for (sample in richTextSamples) {
-                    Heading(sample.title, sample.description)
-                    val (text, inlineContent) = rememberDemoText(sample.markup) { cited = it }
-                    Frame(width) { BetterText(text, Modifier.padding(4.dp), style = style, inlineContent = inlineContent) }
-                    if (sample.markup.contains("[^")) {
-                        Text(
-                            citations[cited]?.let { "[$cited] $it" } ?: "点击引用标记查看来源",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    if (sample.markup == TALL_PARAGRAPH) {
-                        Text(
-                            "对比：Compose Text + Placeholder",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                        Frame(width) { PlaceholderParagraph(TALL_PARAGRAPH, style, Modifier.padding(4.dp)) }
-                        Text(
-                            "设置了 lineHeight 时高公式和上下行重叠；占位符只能居中，公式基线和文字基线对不齐",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                Text(
+                    "长按选择文字，拖动可以跨段落选择；公式和引用整体选中，复制时输出源码",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                BetterSelectionContainer {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        for (sample in richTextSamples) {
+                            Heading(sample.title, sample.description)
+                            val (text, inlineContent) = rememberDemoText(sample.markup) { cited = it }
+                            Frame(width) { BetterText(text, Modifier.padding(4.dp), style = style, inlineContent = inlineContent) }
+                            if (sample.markup.contains("[^")) {
+                                Text(
+                                    citations[cited]?.let { "[$cited] $it" } ?: "点击引用标记查看来源",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            if (sample.markup == TALL_PARAGRAPH) {
+                                Text(
+                                    "对比：Compose Text + Placeholder",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                                Frame(width) { PlaceholderParagraph(TALL_PARAGRAPH, style, Modifier.padding(4.dp)) }
+                                Text(
+                                    "设置了 lineHeight 时高公式和上下行重叠；占位符只能居中，公式基线和文字基线对不齐",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+
+                        Heading("样式", "公式跟随所在位置的字号和颜色")
+                        StyledParagraph(width, style)
                     }
                 }
-
-                Heading("样式", "公式跟随所在位置的字号和颜色")
-                StyledParagraph(width, style)
             }
         }
     }

@@ -1,20 +1,25 @@
 package me.rerere.bettertext.text
 
+import android.graphics.Path
 import android.graphics.Typeface
 import android.text.StaticLayout
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.semantics.semantics
@@ -30,6 +35,7 @@ import androidx.compose.ui.unit.Constraints
  * [inlineContent]; remember the map, since a new map re-prepares the text.
  * Each line is at least `style.lineHeight` tall and grows to fit taller
  * inline items or larger text, instead of overlapping its neighbors.
+ * Inside a [BetterSelectionContainer] the text is selectable.
  *
  * @param maxLines lines beyond this are cut off with an ellipsis.
  */
@@ -51,13 +57,39 @@ fun BetterText(
     }
     val cache = remember(prepared) { TextLayoutCache(prepared) }
     val holder = remember(prepared) { LayoutHolder() }
+    val registry = LocalSelectionRegistry.current
+    val selectable = remember(registry) { registry?.let { SelectableText() } }
+    if (registry != null && selectable != null) {
+        DisposableEffect(registry, selectable) {
+            registry.register(selectable)
+            onDispose { registry.unregister(selectable) }
+        }
+    }
+    val selectionColor = LocalTextSelectionColors.current.backgroundColor
+    val selectionPath = remember { Path() }
 
     Layout(
         contents = prepared.composables.map { it.inline.content },
         modifier = modifier
             .semantics { this.text = text }
+            .then(
+                if (selectable != null) {
+                    Modifier.onGloballyPositioned {
+                        selectable.coordinates = it
+                        registry?.onLayoutChanged()
+                    }
+                } else {
+                    Modifier
+                },
+            )
             .drawBehind {
                 val layout = holder.layout ?: return@drawBehind
+                val range = selectable?.let { registry?.rangeOf(it) }
+                if (range != null) {
+                    selectionPath.reset()
+                    layout.getSelectionPath(range.first, range.last + 1, selectionPath)
+                    drawPath(selectionPath.asComposePath(), selectionColor)
+                }
                 drawIntoCanvas { layout.draw(it.nativeCanvas) }
             },
     ) { measurables, constraints ->
@@ -75,6 +107,11 @@ fun BetterText(
         val maxWidth = if (constraints.hasBoundedWidth) constraints.maxWidth else Int.MAX_VALUE
         val layout = cache.layout(constraints.minWidth, maxWidth, maxLines)
         holder.layout = layout
+        if (selectable != null && (selectable.layout !== layout || selectable.prepared !== prepared)) {
+            selectable.prepared = prepared
+            selectable.layout = layout
+            registry?.onLayoutChanged()
+        }
         val width = layout.width.coerceIn(constraints.minWidth, constraints.maxWidth)
         val height = layout.height.coerceIn(constraints.minHeight, constraints.maxHeight)
         layout(

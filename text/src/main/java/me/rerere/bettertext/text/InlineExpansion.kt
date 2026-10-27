@@ -3,10 +3,15 @@ package me.rerere.bettertext.text
 import androidx.compose.ui.text.AnnotatedString
 
 /** The character that stands for one segment of an inline item in the laid-out text. */
-internal const val OBJECT_CHAR = '￼'
+internal const val OBJECT_CHAR = '\uFFFC'
 
-/** An inline item occupying `[start, start + segments)` of [ExpandedText.text]. */
-internal class InlineItem(val content: BetterInline, val start: Int, val segments: Int)
+/**
+ * An inline item occupying `[start, start + segments)` of [ExpandedText.text];
+ * [altText] stands for it when the text is copied.
+ */
+internal class InlineItem(val content: BetterInline, val start: Int, val segments: Int, val altText: String) {
+    val end: Int get() = start + segments
+}
 
 /**
  * [AnnotatedString] text with the alt text of each resolved inline item
@@ -44,7 +49,7 @@ internal fun expandInlines(text: AnnotatedString, inlineContent: Map<String, Bet
         pos = annotation.end
         if (segments <= 0) continue
         repeat(segments) { out.append(OBJECT_CHAR) }
-        items.add(InlineItem(content, start, segments))
+        items.add(InlineItem(content, start, segments, source.substring(annotation.start, annotation.end)))
     }
     copyTo(source.length)
     offsets[source.length] = out.length

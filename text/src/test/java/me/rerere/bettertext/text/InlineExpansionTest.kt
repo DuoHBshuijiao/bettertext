@@ -25,7 +25,7 @@ class InlineExpansionTest {
         }
         val expanded = expandInlines(text, mapOf("math" to math, "cite" to cite))
 
-        assertEquals("ab￼￼￼c￼", expanded.text)
+        assertEquals("ab\uFFFC\uFFFC\uFFFCc\uFFFC", expanded.text)
         assertEquals(listOf(2, 6), expanded.items.map { it.start })
         assertEquals(listOf(3, 1), expanded.items.map { it.segments })
         assertSame(math, expanded.items[0].content)
