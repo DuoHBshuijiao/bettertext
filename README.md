@@ -1,8 +1,8 @@
 # BetterText
 
-A Jetpack Compose library for rich text with inline math, aimed at markdown rendering in apps like LLM chat clients.
+A Jetpack Compose library for rendering the replies of LLM chat apps: Markdown with math, inline components and highlighted code, streamed in token by token.
 
-Compose's `Text` makes inline formulas and other inline components awkward, and existing math renderers such as JLatexMath can't wrap a long inline formula across lines the way KaTeX does in a browser. BetterText addresses both.
+Compose's Text handles this poorly. Inline content must fit a fixed-size placeholder that doesn't follow the text's baseline, a tall formula overlaps the lines around it, and a custom text layout can't take part in selection. Math renderers such as JLatexMath can't wrap a long inline formula across lines the way KaTeX does in a browser. BetterText lays out text itself and ports KaTeX for math, so formulas wrap and line up with the text, lines grow to fit them, and a whole reply can be selected and copied.
 
 ## Features
 
