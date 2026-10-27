@@ -2,6 +2,8 @@
 
 [English](README.md) · **简体中文**
 
+[![JitPack](https://jitpack.io/v/re-ovo/bettertext.svg)](https://jitpack.io/#re-ovo/bettertext)
+
 ![BetterText 渲染带公式和代码高亮的 Markdown](docs/banner.zh.webp)
 
 一个用来渲染 LLM 聊天回复的 Jetpack Compose 库：带公式的 Markdown、行内组件和代码高亮，随 token 逐步流式输出。

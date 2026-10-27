@@ -2,6 +2,8 @@
 
 **English** · [简体中文](README.zh-CN.md)
 
+[![JitPack](https://jitpack.io/v/re-ovo/bettertext.svg)](https://jitpack.io/#re-ovo/bettertext)
+
 ![BetterText rendering Markdown with math and highlighted code](docs/banner.webp)
 
 A Jetpack Compose library for rendering the replies of LLM chat apps: Markdown with math, inline components and highlighted code, streamed in token by token.
