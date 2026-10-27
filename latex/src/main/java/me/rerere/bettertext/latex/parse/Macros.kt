@@ -1,6 +1,8 @@
 package me.rerere.bettertext.latex.parse
 
 import me.rerere.bettertext.latex.ParseError
+import me.rerere.bettertext.latex.contrib.MhchemException
+import me.rerere.bettertext.latex.contrib.chemParse
 import me.rerere.bettertext.latex.data.MacrosData
 
 /** KaTeX's built-in macros: the generated string macros plus the ones implemented as functions. */
@@ -92,7 +94,28 @@ internal object BuiltinMacros {
         }
         def("\\bra@ket", braketHelper(false))
         def("\\bra@set", braketHelper(true))
+
+        // contrib/mhchem
+        def("\\ce") { ctx -> mhchem(ctx, "ce") }
+        def("\\pu") { ctx -> mhchem(ctx, "pu") }
+        // Needed for \bond for the ~ forms. Raise by 2.56mu, not 2mu: we're raising a
+        // hyphen-minus, U+002D, not a mathematical minus, U+2212, so we need that extra 0.56.
+        map["\\tripledash"] = MacroDefinition.Text(
+            "{\\vphantom{-}\\raisebox{2.56mu}{\$\\mkern2mu" +
+                "\\tiny\\text{-}\\mkern1mu\\text{-}\\mkern1mu\\text{-}\\mkern2mu\$}}",
+        )
         return map
+    }
+
+    /** `\ce` and `\pu`: converts the argument to TeX; mhchem errors become parse errors. */
+    private fun mhchem(ctx: MacroExpander, stateMachine: String): MacroDefinition {
+        val tokens = ctx.consumeArgs(1)[0]
+        val tex = try {
+            chemParse(tokens, stateMachine)
+        } catch (e: MhchemException) {
+            throw ParseError(e.message ?: e.name, tokens.lastOrNull()?.loc?.start ?: -1)
+        }
+        return MacroDefinition.Text(tex)
     }
 
     private val digitToNumber: Map<String, Int> = buildMap {

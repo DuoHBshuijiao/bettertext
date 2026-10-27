@@ -127,6 +127,18 @@ internal val sections = listOf(
         ),
     ),
     Section(
+        "化学", "mhchem 扩展：\\ce 化学式与方程式，\\pu 物理单位",
+        listOf(
+            Sample("""\ce{2H2 + O2 -> 2H2O}"""),
+            Sample("""\ce{CaCO3 ->[高温] CaO + CO2 ^}""", display = true),
+            Sample("""\ce{SO4^2- + Ba^2+ -> BaSO4 v}""", note = "电荷、沉淀符号"),
+            Sample("""\ce{N2 + 3H2 <=>[\text{催化剂}][\Delta] 2NH3}""", display = true),
+            Sample("""\ce{^{227}_{90}Th+}\ \ce{[Cu(NH3)4]^2+}\ \ce{CuSO4*5H2O}"""),
+            Sample("""\ce{C6H5-CHO}\ \ce{A=B}\ \ce{A#B}\ \ce{A\bond{~}B}""", note = "化学键"),
+            Sample("""\pu{123 kJ/mol}\ \pu{1.2e3 m/s^2}"""),
+        ),
+    ),
+    Section(
         "宏", "\\def、\\newcommand 和 LatexSettings.macros",
         listOf(
             Sample("""\def\pair#1#2{\left\langle #1, #2 \right\rangle} \pair{a}{\frac{1}{2}}"""),

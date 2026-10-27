@@ -1,0 +1,146 @@
+# GENERATED from KaTeX 0.19.1 contrib/mhchem by tools/mhchem-fixtures.js. DO NOT EDIT.
+ce	CO2 + C -> 2 CO	{\mathrm{CO}{\vphantom{X}}_{\smash[t]{2}} {}+{} \mathrm{C}\xrightarrow{}2\,\mathrm{CO}}
+ce	Hg^2+ ->[I-] HgI2 ->[I-] [Hg^{II}I4]^2-	{\mathrm{Hg}{\vphantom{X}}^{2+}\xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}\mathrm{HgI}{\vphantom{X}}_{\smash[t]{2}}\xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}[\mathrm{Hg}{\vphantom{X}}^{\mathrm{II}}\mathrm{I}{\vphantom{X}}_{\smash[t]{4}}]{\vphantom{X}}^{2-}}
+ce	H2O	{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	Sb2O3	{\mathrm{Sb}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}{\vphantom{X}}_{\smash[t]{3}}}
+ce	H+	{\mathrm{H}{\vphantom{X}}^{+}}
+ce	CrO4^2-	{\mathrm{CrO}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{2-}}
+ce	[AgCl2]-	{[\mathrm{AgCl}{\vphantom{X}}_{\smash[t]{2}}]{\vphantom{X}}^{-}}
+ce	Y^99+	{\mathrm{Y}{\vphantom{X}}^{99+}}
+ce	Y^{99+}	{\mathrm{Y}{\vphantom{X}}^{99+}}
+ce	2 H2O	{2\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	2H2O	{2\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	0.5 H2O	{0.5\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	1/2 H2O	{\mathchoice{\textstyle\frac{1}{2}}{\frac{1}{2}}{\frac{1}{2}}{\frac{1}{2}}\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	(1/2) H2O	{(1/2)\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	$n$ H2O	{n \,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	^{227}_{90}Th+	{{\vphantom{X}}^{\hphantom{227}}_{\hphantom{90}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{227}}_{\vphantom{2}\mathllap{\smash[t]{90}}}\mathrm{Th}{\vphantom{X}}^{+}}
+ce	^227_90Th+	{{\vphantom{X}}^{\hphantom{227}}_{\hphantom{90}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{227}}_{\vphantom{2}\mathllap{\smash[t]{90}}}\mathrm{Th}{\vphantom{X}}^{+}}
+ce	^{0}_{-1}n^{-}	{{\vphantom{X}}^{\hphantom{0}}_{\hphantom{-1}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{0}}_{\vphantom{2}\mathllap{\smash[t]{-1}}}\mathrm{n}{\vphantom{X}}^{-}}
+ce	^0_-1n-	{{\vphantom{X}}^{\hphantom{0}}_{\hphantom{-1}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{0}}_{\vphantom{2}\mathllap{\smash[t]{-1}}}\mathrm{n}{\vphantom{X}}^{-}}
+ce	H{}^3HO	{\mathrm{H}{\vphantom{X}}^{\hphantom{3}}_{\hphantom{}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{3}}_{\vphantom{2}\mathllap{\smash[t]{}}}\mathrm{HO}}
+ce	H^3HO	{\mathrm{H}{\vphantom{X}}^{\hphantom{3}}_{\hphantom{}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{3}}_{\vphantom{2}\mathllap{\smash[t]{}}}\mathrm{HO}}
+ce	x Na(NH4)HPO4 ->[\Delta] (NaPO3)_x + x NH3 ^ + x H2O	{x\,\mathrm{Na}(\mathrm{NH}{\vphantom{X}}_{\smash[t]{4}})\mathrm{HPO}{\vphantom{X}}_{\smash[t]{4}}\xrightarrow{\mathrm{\Delta}}(\mathrm{NaPO}{\vphantom{X}}_{\smash[t]{3}}){\vphantom{X}}_{\smash[t]{x }} {}+{} x\,\mathrm{NH}{\vphantom{X}}_{\smash[t]{3}} \uparrow{}  {}+{} x\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	$x$ Na(NH4)HPO4	{x \,\mathrm{Na}(\mathrm{NH}{\vphantom{X}}_{\smash[t]{4}})\mathrm{HPO}{\vphantom{X}}_{\smash[t]{4}}}
+ce	NO3-	{\mathrm{NO}{\vphantom{X}}_{\smash[t]{3}}{\vphantom{X}}^{-}}
+ce	(NH4)2S	{(\mathrm{NH}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\mathrm{S}}
+ce	Fe(CN)6^3-	{\mathrm{Fe}(\mathrm{CN}){\vphantom{X}}_{\smash[t]{6}}{\vphantom{X}}^{3-}}
+ce	KCr(SO4)2*12H2O	{\mathrm{KCr}(\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\,{\cdot}\,12\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	KCr(SO4)2.12H2O	{\mathrm{KCr}(\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\,{\cdot}\,12\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	KCr(SO4)2 * 12 H2O	{\mathrm{KCr}(\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}){\vphantom{X}}_{\smash[t]{2}}\,{\cdot}\,12\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	Fe^{II}Fe^{III}2O4	{\mathrm{Fe}{\vphantom{X}}^{\mathrm{II}}\mathrm{Fe}{\vphantom{X}}^{\mathrm{III}}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}{\vphantom{X}}_{\smash[t]{4}}}
+ce	Fe^{0}	{\mathrm{Fe}{\vphantom{X}}^{0}}
+ce	Fe^{+III}	{\mathrm{Fe}{\vphantom{X}}^{+\mathrm{III}}}
+ce	OCO^{.-}	{\mathrm{OCO}{\vphantom{X}}^{\mkern1mu \bullet\mkern1mu -}}
+ce	NO^{(2.)-}	{\mathrm{NO}{\vphantom{X}}^{(2\mkern1mu \bullet\mkern1mu )-}}
+ce	A -> B	{\mathrm{A}\xrightarrow{}\mathrm{B}}
+ce	A <- B	{\mathrm{A}\xleftarrow{}\mathrm{B}}
+ce	A <-> B	{\mathrm{A}\xleftrightarrow{}\mathrm{B}}
+ce	A <--> B	{\mathrm{A}\xrightleftarrows{}\mathrm{B}}
+ce	A <=> B	{\mathrm{A}\xrightleftharpoons{}\mathrm{B}}
+ce	A <=>> B	{\mathrm{A}\xrightequilibrium{}\mathrm{B}}
+ce	A <<=> B	{\mathrm{A}\xleftequilibrium{}\mathrm{B}}
+ce	A ->[H2O] B	{\mathrm{A}\xrightarrow{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}\mathrm{B}}
+ce	A ->[{text above}][{text below}] B	{\mathrm{A}\xrightarrow[{{\text{text below}}}]{{\text{text above}}}\mathrm{B}}
+ce	A ->[$x$][$x_i$] B	{\mathrm{A}\xrightarrow[{x_i }]{x }\mathrm{B}}
+ce	A + B	{\mathrm{A} {}+{} \mathrm{B}}
+ce	A - B	{\mathrm{A} {}-{} \mathrm{B}}
+ce	A = B	{\mathrm{A} {}={} \mathrm{B}}
+ce	A \pm B	{\mathrm{A} {}\pm{} \mathrm{B}}
+ce	SO4^2- + Ba^2+ -> BaSO4 v	{\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{2-} {}+{} \mathrm{Ba}{\vphantom{X}}^{2+}\xrightarrow{}\mathrm{BaSO}{\vphantom{X}}_{\smash[t]{4}} \downarrow{} }
+ce	A v B (v) -> B ^ B (^)	{\mathrm{A} \downarrow{} ~\mathrm{B} \downarrow{} \xrightarrow{}\mathrm{B} \uparrow{} ~\mathrm{B} \uparrow{} }
+ce	NaOH(aq,$\infty$)	{\mathrm{NaOH}\mskip2mu (\mathrm{aq},\infty )}
+ce	H2O(l)	{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}\mskip2mu (\mathrm{l})}
+ce	ZnCl2(aq)	{\mathrm{ZnCl}{\vphantom{X}}_{\smash[t]{2}}\mskip2mu (\mathrm{aq})}
+ce	Zn^2+ <=>[+ 2OH-][+ 2H+] $\underset{\text{amphoteres Hydroxid}}{\ce{Zn(OH)2 v}}$ <=>[+ 2OH-][+ 2H+] $\underset{\text{Hydroxozikat}}{\ce{[Zn(OH)4]^2-}}$	{\mathrm{Zn}{\vphantom{X}}^{2+}\xrightleftharpoons[{ {}+{} 2\,\mathrm{H}{\vphantom{X}}^{+}}]{ {}+{} 2\,\mathrm{OH}{\vphantom{X}}^{-}}\underset{\text{amphoteres Hydroxid}}{\ce{Zn(OH)2 v}} \xrightleftharpoons[{ {}+{} 2\,\mathrm{H}{\vphantom{X}}^{+}}]{ {}+{} 2\,\mathrm{OH}{\vphantom{X}}^{-}}\underset{\text{Hydroxozikat}}{\ce{[Zn(OH)4]^2-}} }
+ce	Hg^2+ ->[I-] $\underset{\mathrm{red}}{\ce{HgI2}}$ ->[I-] $\underset{\mathrm{red}}{\ce{[Hg^{II}I4]^2-}}$	{\mathrm{Hg}{\vphantom{X}}^{2+}\xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}\underset{\mathrm{red}}{\ce{HgI2}} \xrightarrow{\mathrm{I}{\vphantom{X}}^{-}}\underset{\mathrm{red}}{\ce{[Hg^{II}I4]^2-}} }
+ce	A-B=C#D	{\mathrm{A}{-}\mathrm{B}{=}\mathrm{C}{\equiv}\mathrm{D}}
+ce	A\bond{-}B\bond{=}C\bond{#}D	{\mathrm{A}{-}\mathrm{B}{=}\mathrm{C}{\equiv}\mathrm{D}}
+ce	A\bond{1}B\bond{2}C\bond{3}D	{\mathrm{A}{-}\mathrm{B}{=}\mathrm{C}{\equiv}\mathrm{D}}
+ce	A\bond{~}B\bond{~-}C	{\mathrm{A}{\tripledash}\mathrm{B}{\mathrlap{\raisebox{-.1em}{$-$}}\raisebox{.1em}{$\tripledash$}}\mathrm{C}}
+ce	A\bond{~--}B\bond{~=}C\bond{-~-}D	{\mathrm{A}{\mathrlap{\raisebox{-.2em}{$-$}}\mathrlap{\raisebox{.2em}{$\tripledash$}}-}\mathrm{B}{\mathrlap{\raisebox{-.2em}{$-$}}\mathrlap{\raisebox{.2em}{$\tripledash$}}-}\mathrm{C}{\mathrlap{\raisebox{-.2em}{$-$}}\mathrlap{\raisebox{.2em}{$-$}}\tripledash}\mathrm{D}}
+ce	A\bond{...}B\bond{....}C	{\mathrm{A}{{\cdot}{\cdot}{\cdot}}\mathrm{B}{{\cdot}{\cdot}{\cdot}{\cdot}}\mathrm{C}}
+ce	A\bond{->}B\bond{<-}C	{\mathrm{A}{\rightarrow}\mathrm{B}{\leftarrow}\mathrm{C}}
+ce	CH4 + 2 $\left( \ce{O2 + 79/21 N2} \right)$	{\mathrm{CH}{\vphantom{X}}_{\smash[t]{4}} {}+{} 2\,\left(  \mathrm{O}{\vphantom{X}}_{\smash[t]{2}} {}+{} \mathchoice{\textstyle\frac{79}{21}}{\frac{79}{21}}{\frac{79}{21}}{\frac{79}{21}}\,\mathrm{N}{\vphantom{X}}_{\smash[t]{2}} \right) }
+ce	\mu-Cl	{\mathrm{\mu}\text{-}\mathrm{Cl}}
+ce	2\,{}^{14}C	{2\,{\vphantom{X}}^{\hphantom{14}}_{\hphantom{}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{14}}_{\vphantom{2}\mathllap{\smash[t]{}}}\mathrm{C}}
+ce	H2(aq) + S(s)	{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mskip2mu (\mathrm{aq}) {}+{} \mathrm{S}\mskip2mu (\mathrm{s})}
+ce	CuSO4 . 5 H2O	{\mathrm{CuSO}{\vphantom{X}}_{\smash[t]{4}}\,{\cdot}\,5\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	Na+ + Cl- -> NaCl	{\mathrm{Na}{\vphantom{X}}^{+} {}+{} \mathrm{Cl}{\vphantom{X}}^{-}\xrightarrow{}\mathrm{NaCl}}
+ce	NaCl(s) -> Na+(aq) + Cl-(aq)	{\mathrm{NaCl}\mskip2mu (\mathrm{s})\xrightarrow{}\mathrm{Na}{\vphantom{X}}^{+}\mskip2mu (\mathrm{aq}) {}+{} \mathrm{Cl}{\vphantom{X}}^{-}\mskip2mu (\mathrm{aq})}
+ce	\alpha-NaOH	{\mathrm{\alpha}\text{-}\mathrm{NaOH}}
+ce	Ca(OH)2 v	{\mathrm{Ca}(\mathrm{OH}){\vphantom{X}}_{\smash[t]{2}} \downarrow{} }
+ce	NaOH + HCl -> NaCl + H2O	{\mathrm{NaOH} {}+{} \mathrm{HCl}\xrightarrow{}\mathrm{NaCl} {}+{} \mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	H3O+	{\mathrm{H}{\vphantom{X}}_{\smash[t]{3}}\mathrm{O}{\vphantom{X}}^{+}}
+ce	OH-	{\mathrm{OH}{\vphantom{X}}^{-}}
+ce	Mg2+	{\mathrm{Mg}{\vphantom{X}}_{\smash[t]{2}}{\vphantom{X}}^{+}}
+ce	Mg^2+	{\mathrm{Mg}{\vphantom{X}}^{2+}}
+ce	SO4^2-	{\mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{2-}}
+ce	e-	{\mathrm{e}{\vphantom{X}}^{-}}
+ce	e^-	{\mathrm{e}{\vphantom{X}}^{-}}
+ce	CH3CH2OH	{\mathrm{CH}{\vphantom{X}}_{\smash[t]{3}}\mathrm{CH}{\vphantom{X}}_{\smash[t]{2}}\mathrm{OH}}
+ce	CH3-CH2-OH	{\mathrm{CH}{\vphantom{X}}_{\smash[t]{3}}{-}\mathrm{CH}{\vphantom{X}}_{\smash[t]{2}}{-}\mathrm{OH}}
+ce	CH2=CH2	{\mathrm{CH}{\vphantom{X}}_{\smash[t]{2}}{=}\mathrm{CH}{\vphantom{X}}_{\smash[t]{2}}}
+ce	HC#CH	{\mathrm{HC}{\equiv}\mathrm{CH}}
+ce	C6H5-CHO	{\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{5}}{-}\mathrm{CHO}}
+ce	X_{i}^{x}	{\mathrm{X}{\vphantom{X}}_{\smash[t]{\mathrm{i}}}{\vphantom{X}}^{{\times}}}
+ce	X_i^x	{\mathrm{X}{\vphantom{X}}_{\smash[t]{\mathrm{i}}}{\vphantom{X}}^{{\times}}}
+ce	NH4^+	{\mathrm{NH}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{+}}
+ce	O2^{-}	{\mathrm{O}{\vphantom{X}}_{\smash[t]{2}}{\vphantom{X}}^{-}}
+ce	P4O10	{\mathrm{P}{\vphantom{X}}_{\smash[t]{4}}\mathrm{O}{\vphantom{X}}_{\smash[t]{10}}}
+ce	Fe2O3 + 3 C -> 2 Fe + 3 CO	{\mathrm{Fe}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}{\vphantom{X}}_{\smash[t]{3}} {}+{} 3\,\mathrm{C}\xrightarrow{}2\,\mathrm{Fe} {}+{} 3\,\mathrm{CO}}
+ce	2H2 + O2 -> 2H2O	{2\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}} {}+{} \mathrm{O}{\vphantom{X}}_{\smash[t]{2}}\xrightarrow{}2\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	CH4 + 2O2 -> CO2 + 2H2O	{\mathrm{CH}{\vphantom{X}}_{\smash[t]{4}} {}+{} 2\,\mathrm{O}{\vphantom{X}}_{\smash[t]{2}}\xrightarrow{}\mathrm{CO}{\vphantom{X}}_{\smash[t]{2}} {}+{} 2\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	N2 + 3H2 <=> 2NH3	{\mathrm{N}{\vphantom{X}}_{\smash[t]{2}} {}+{} 3\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\xrightleftharpoons{}2\,\mathrm{NH}{\vphantom{X}}_{\smash[t]{3}}}
+ce	CaCO3 ->[高温] CaO + CO2 ^	{\mathrm{CaCO}{\vphantom{X}}_{\smash[t]{3}}\xrightarrow{高温}\mathrm{CaO} {}+{} \mathrm{CO}{\vphantom{X}}_{\smash[t]{2}} \uparrow{} }
+ce	CaCO3 ->[\Delta] CaO + CO2 ^	{\mathrm{CaCO}{\vphantom{X}}_{\smash[t]{3}}\xrightarrow{\mathrm{\Delta}}\mathrm{CaO} {}+{} \mathrm{CO}{\vphantom{X}}_{\smash[t]{2}} \uparrow{} }
+ce	A + B ->[catalyst] C	{\mathrm{A} {}+{} \mathrm{B}\xrightarrow{\mathrm{catalyst}}\mathrm{C}}
+ce	Cu^{2+} + 2e^- -> Cu	{\mathrm{Cu}{\vphantom{X}}^{2+} {}+{} 2\,\mathrm{e}{\vphantom{X}}^{-}\xrightarrow{}\mathrm{Cu}}
+ce	{}^{12}_{6}C	{{\vphantom{X}}^{\hphantom{12}}_{\hphantom{6}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{12}}_{\vphantom{2}\mathllap{\smash[t]{6}}}\mathrm{C}}
+ce	^{14}C	{{\vphantom{X}}^{\hphantom{14}}_{\hphantom{}}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{14}}_{\vphantom{2}\mathllap{\smash[t]{}}}\mathrm{C}}
+ce	NH3 + H2O <=> NH4+ + OH-	{\mathrm{NH}{\vphantom{X}}_{\smash[t]{3}} {}+{} \mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}\xrightleftharpoons{}\mathrm{NH}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{+} {}+{} \mathrm{OH}{\vphantom{X}}^{-}}
+ce	2 Na + Cl2 -> 2 NaCl	{2\,\mathrm{Na} {}+{} \mathrm{Cl}{\vphantom{X}}_{\smash[t]{2}}\xrightarrow{}2\,\mathrm{NaCl}}
+ce	C6H12O6 + 6 O2 -> 6 CO2 + 6 H2O	{\mathrm{C}{\vphantom{X}}_{\smash[t]{6}}\mathrm{H}{\vphantom{X}}_{\smash[t]{12}}\mathrm{O}{\vphantom{X}}_{\smash[t]{6}} {}+{} 6\,\mathrm{O}{\vphantom{X}}_{\smash[t]{2}}\xrightarrow{}6\,\mathrm{CO}{\vphantom{X}}_{\smash[t]{2}} {}+{} 6\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	Ba^2+ + SO4^2- -> BaSO4(s)	{\mathrm{Ba}{\vphantom{X}}^{2+} {}+{} \mathrm{SO}{\vphantom{X}}_{\smash[t]{4}}{\vphantom{X}}^{2-}\xrightarrow{}\mathrm{BaSO}{\vphantom{X}}_{\smash[t]{4}}\mskip2mu (\mathrm{s})}
+ce	A ->[\text{light}] B	{\mathrm{A}\xrightarrow{\text{light}}\mathrm{B}}
+ce	A ->[{}][\text{below}] B	{\mathrm{A}\xrightarrow[{\text{below}}]{}\mathrm{B}}
+ce	A <=>[\text{cat.}] B	{\mathrm{A}\xrightleftharpoons{\text{cat.}}\mathrm{B}}
+ce	\frac{1}{2} H2O	{\frac{1}{2}~\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}
+ce	\color{red}{H2O}	{{\color{red}{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}}}}
+ce	H2O \text{ and } CO2	{\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}~\text{ and }~\mathrm{CO}{\vphantom{X}}_{\smash[t]{2}}}
+ce	1s^2 2s^2 2p^6	{1\mathrm{s}{\vphantom{X}}^{2}~2\mathrm{s}{\vphantom{X}}^{2}~2\mathrm{p}{\vphantom{X}}^{6}}
+ce	3 H2O(g)	{3\,\mathrm{H}{\vphantom{X}}_{\smash[t]{2}}\mathrm{O}\mskip2mu (\mathrm{g})}
+ce	(CH3)3C-OH	{(\mathrm{CH}{\vphantom{X}}_{\smash[t]{3}}){\vphantom{X}}_{\smash[t]{3}}\mathrm{C}{-}\mathrm{OH}}
+ce	[Cu(NH3)4]^2+	{[\mathrm{Cu}(\mathrm{NH}{\vphantom{X}}_{\smash[t]{3}}){\vphantom{X}}_{\smash[t]{4}}]{\vphantom{X}}^{2+}}
+ce	Fe^3+ + 3 SCN- <=> Fe(SCN)3	{\mathrm{Fe}{\vphantom{X}}^{3+} {}+{} 3\,\mathrm{SCN}{\vphantom{X}}^{-}\xrightleftharpoons{}\mathrm{Fe}(\mathrm{SCN}){\vphantom{X}}_{\smash[t]{3}}}
+ce	CH3COOH <=> CH3COO- + H+	{\mathrm{CH}{\vphantom{X}}_{\smash[t]{3}}\mathrm{COOH}\xrightleftharpoons{}\mathrm{CH}{\vphantom{X}}_{\smash[t]{3}}\mathrm{COO}{\vphantom{X}}^{-} {}+{} \mathrm{H}{\vphantom{X}}^{+}}
+ce	K_{a} = 1.8 \times 10^{-5}	{\mathrm{K}{\vphantom{X}}_{\smash[t]{a }} {}={} 1.8\,\times 10{\vphantom{X}}^{-5}}
+ce	A ->T B	{\mathrm{A}\xrightarrow{}\mathrm{T}~\mathrm{B}}
+ce	pH	{\mathrm{pH}}
+ce	NaCl, KCl	{\mathrm{NaCl}{,}\mkern6mu \mathrm{KCl}}
+ce	a+b-c	{\mathrm{a}{\vphantom{X}}^{+}b \text{-}\mathrm{c}}
+ce	A->B	{\mathrm{A}\xrightarrow{}\mathrm{B}}
+ce	A + _{x}B	{\mathrm{A} {}+{} {\vphantom{X}}^{\hphantom{}}_{\hphantom{x }}{\vphantom{X}}^{\smash[t]{\vphantom{2}}\mathllap{}}_{\vphantom{2}\mathllap{\smash[t]{x }}}\mathrm{B}}
+ce	A\bond{x}B	!MhchemBugT
+ce	A ->[$\frac{1}{2}$] B	{\mathrm{A}\xrightarrow{\frac{1}{2} }\mathrm{B}}
+ce	123	{123}
+ce	-	{ {}-{} }
+ce	+	{{+}}
+pu	123 kJ	{123~\mathrm{kJ}}
+pu	123 mm2	{123~\mathrm{mm^{2}}}
+pu	0.01 \mu{}g	{0.01~\mathrm{\mu{}g}}
+pu	1e-3 mol	{1\cdot 10^{-3}~\mathrm{mol}}
+pu	1.2e3 kJ/mol	{1.2\cdot 10^{3}~\mathrm{kJ}/\mathrm{mol}}
+pu	1,2 kJ	{1{,}2~\mathrm{kJ}}
+pu	12 m/s^2	{12~\mathrm{m}/\mathrm{s^{2}}}
+pu	8.314 J K^-1 mol^-1	{8.314~\mathrm{J}\mkern3mu \mathrm{K^{-1}}\mkern3mu \mathrm{mol^{-1}}}
+pu	6.022 * 10^23 mol^-1	{6.022\cdot 10^{23}~\mathrm{mol^{-1}}}
+pu	1.2x10^3 kJ	{1.2\times 10^{3}~\mathrm{kJ}}
+pu	37 \degree C	{37~\mathrm{\degree C}}
+pu	-5 °C	{-5~\mathrm{{}^{\circ}C}}
+pu	123 kJ/mol	{123~\mathrm{kJ}/\mathrm{mol}}
+pu	123 kJ//mol	{123~\mathchoice{\textstyle\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}{\frac{\mathrm{kJ}}{\mathrm{mol}}}}
+pu	10 \ohm	{10~\mathrm{\ohm}}
+pu	1 m/s	{1~\mathrm{m}/\mathrm{s}}
+pu	3.14159	{3.141\mkern2mu 59}
+pu	1 234 567 m	{1~\mathrm{234}\mkern3mu \mathrm{567}\mkern3mu \mathrm{m}}

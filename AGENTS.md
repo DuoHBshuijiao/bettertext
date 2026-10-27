@@ -4,7 +4,7 @@
 
 BetterText is a Compose library that replaces `BasicText` to improve rich markdown rendering, especially inline formulas and other inline components. It lays out text itself with `StaticLayout` instead of building on `BasicText` and `SelectionContainer`, because of two Compose issues: a uniform `lineHeight` makes tall inline content overlap adjacent lines ([427657659](https://issuetracker.google.com/issues/427657659)), and `SelectionRegistrar` is internal ([233102278](https://issuetracker.google.com/issues/233102278)). Switch to the built-in APIs once those are fixed.
 
-- `:latex`: a Kotlin port of the KaTeX 0.19.1 parser and HTML builder. It renders LaTeX inline and in display mode on an Android `Canvas` with the bundled KaTeX fonts. It depends on `:text` for `LatexInline`, the inline item that puts formulas in a `BetterText`.
+- `:latex`: a Kotlin port of the KaTeX 0.19.1 parser and HTML builder. It renders LaTeX inline and in display mode on an Android `Canvas` with the bundled KaTeX fonts. It also includes KaTeX's mhchem extension (`\ce`, `\pu`). It depends on `:text` for `LatexInline`, the inline item that puts formulas in a `BetterText`.
 - `:text`: the `BetterText` composable and `BetterSelectionContainer`.
 - `:markdown`: parses Markdown (with math and embedded HTML) and renders it with `BetterText`. It depends on neither `:latex` nor Material 3; apps register code blocks, formulas, tables, images and details blocks.
 - `:highlight`: a pure Kotlin syntax highlighter, ported from highlight.js 11.11.1 (30 languages). It turns code into an `AnnotatedString` for `BetterText`; the gallery's code blocks and highlight tab use it.
@@ -16,6 +16,7 @@ BetterText is a Compose library that replaces `BasicText` to improve rich markdo
 ./gradlew :latex:compileDebugKotlin                       # compile the library
 ./gradlew :latex:testDebugUnitTest                        # JVM unit tests (all)
 ./gradlew :latex:testDebugUnitTest --tests '*MiscTest*'   # one class (append .methodName for one test)
+./gradlew :latex:connectedDebugAndroidTest                # device tests (mhchem regexes on ICU)
 ./gradlew :text:testDebugUnitTest                         # text layer unit tests
 ./gradlew :markdown:testDebugUnitTest                     # Markdown parser tests
 ./gradlew :highlight:testDebugUnitTest                    # highlighter tests, including highlight.js parity
@@ -61,6 +62,13 @@ KaTeX leaves widths and horizontal layout to the browser's CSS. This port comput
 - No strict mode or trust checks.
 - `\includegraphics` and the `CD` environment are not supported.
 - A tall tag makes its array row taller; KaTeX lets it overflow.
+
+### mhchem
+
+`contrib/` ports KaTeX's `contrib/mhchem` (mhchem 3.3.0, Apache 2.0). `\ce` and `\pu` are function macros in `Macros.kt`: `chemParse` rebuilds the argument from its tokens (with the spaces between them, which mhchem needs), `MhchemParser.kt` runs mhchem's state machines and `Texify` turns the result into TeX, which is expanded in place. mhchem errors become parse errors.
+
+- **Regexes:** the patterns are copied from mhchem.js and run through `JsRegex`, which translates them to JavaScript semantics (`$`, `.`, `\s`, matching by UTF-16 code unit). Android's `java.util.regex` is ICU, which is stricter than the JVM's (it rejects unescaped literal braces, for example), so the JVM tests can pass while the app crashes. After changing a pattern or `JsRegex`, run `MhchemDeviceTest` on a device.
+- **Fixtures:** `MhchemTest` checks the output against `src/test/resources/mhchem/fixtures.tsv`, the TeX the original mhchem.js produces for each case in `inputs.txt`. After adding cases, regenerate it with `node latex/tools/mhchem-fixtures.js <katex npm package dir>`; don't edit it by hand.
 
 ## Architecture of `:text`
 

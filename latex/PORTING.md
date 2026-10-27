@@ -1,9 +1,9 @@
 # Porting KaTeX to `:latex`
 
-This module is a Kotlin port of KaTeX 0.19.1's parser and HTML builder. KaTeX
-sources for reference live in
-`/private/tmp/claude-501/-Users-reovo-StudioProjects-bettertext/31014936-1281-45a6-8956-6de9a3b74eea/scratchpad/katex-dl/package/src`
-(TypeScript). `dist/katex.css` next to it holds the CSS rules the builders rely on.
+This module is a Kotlin port of KaTeX 0.19.1's parser and HTML builder. Use the
+KaTeX npm package as the reference (`npm pack katex@0.19.1` and unpack it): `src/`
+holds the TypeScript sources, `dist/katex.css` the CSS rules the builders rely on,
+and `contrib/mhchem/mhchem.js` the source of `contrib/Mhchem*.kt`.
 MathML builders are **not** ported; skip them.
 
 Package `me.rerere.bettertext.latex`:

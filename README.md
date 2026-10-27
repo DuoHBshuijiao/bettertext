@@ -12,7 +12,7 @@ Compose's Text handles this poorly. Inline content must fit a fixed-size placeho
 
 ## Features
 
-- **Inline math that wraps like KaTeX.** A Kotlin port of KaTeX 0.19.1 draws formulas with the KaTeX fonts and supports its functions, environments, macros and symbols. A long inline formula breaks after relations and binary operators, as in a browser.
+- **Inline math that wraps like KaTeX.** A Kotlin port of KaTeX 0.19.1 draws formulas with the KaTeX fonts and supports its functions, environments, macros and symbols, plus chemical equations through its mhchem extension (`\ce`, `\pu`). A long inline formula breaks after relations and binary operators, as in a browser.
 - **Text with inline content.** Formulas, custom drawn items and composables such as citation tags sit in the text on its baseline. Lines grow to fit tall items instead of overlapping their neighbors.
 - **Streaming Markdown.** Markdown with GFM, math and embedded HTML renders as a reply streams in. Only the changed end is parsed again, and unfinished syntax such as an unclosed bold or formula is closed or hidden instead of flashing as raw text.
 - **Components from your app.** Code blocks, formulas, tables, images and details blocks come from the app, so Markdown doesn't depend on Material 3, and apps without math don't ship KaTeX.
@@ -80,4 +80,4 @@ See [AGENTS.md](AGENTS.md) for the architecture and [latex/PORTING.md](latex/POR
 
 ## License
 
-BetterText is released under the [MIT License](LICENSE). The KaTeX code that `:latex` is ported from is also MIT-licensed (see [latex/KATEX_LICENSE](latex/KATEX_LICENSE)). The bundled KaTeX fonts are under the SIL Open Font License. The banner's background is Isaac Levitan's *Evening Bells* (1892), which is in the public domain.
+BetterText is released under the [MIT License](LICENSE). The KaTeX code that `:latex` is ported from is also MIT-licensed (see [latex/KATEX_LICENSE](latex/KATEX_LICENSE)); its mhchem extension, ported in `latex/.../contrib`, is under the Apache License 2.0. The bundled KaTeX fonts are under the SIL Open Font License. The banner's background is Isaac Levitan's *Evening Bells* (1892), which is in the public domain.

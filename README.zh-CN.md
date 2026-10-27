@@ -12,7 +12,7 @@ Compose 的 Text 处理不好这些内容。行内内容只能放进固定尺寸
 
 ## 特性
 
-- **像 KaTeX 一样折行的行内公式。** KaTeX 0.19.1 的 Kotlin 移植，用 KaTeX 字体绘制公式，支持它的函数、环境、宏和符号。长的行内公式会在关系符和二元运算符后面折行，和浏览器里一样。
+- **像 KaTeX 一样折行的行内公式。** KaTeX 0.19.1 的 Kotlin 移植，用 KaTeX 字体绘制公式，支持它的函数、环境、宏和符号，以及 mhchem 扩展提供的化学式（`\ce`、`\pu`）。长的行内公式会在关系符和二元运算符后面折行，和浏览器里一样。
 - **带行内内容的文字。** 公式、自定义绘制的内容，以及引用标记这类组件，都对齐文字基线排在行内。遇到高的内容，行会长高，而不是和相邻的行重叠。
 - **流式 Markdown。** 支持 GFM、公式和内嵌 HTML，回复一边输出一边渲染。每次只重新解析变化的末尾；没写完的语法，比如没闭合的加粗或公式，会被补全或隐藏，不会先闪一下原文。
 - **组件由应用提供。** 代码块、公式、表格、图片和折叠块由应用注册，所以 Markdown 不依赖 Material 3，不需要公式的应用也不用打包 KaTeX。
@@ -80,4 +80,4 @@ Compose 有两个尚未解决的问题，导致文字层没法基于 `BasicText`
 
 ## 许可
 
-BetterText 以 [MIT 许可证](LICENSE) 发布。`:latex` 移植自的 KaTeX 代码同样采用 MIT 许可证（见 [latex/KATEX_LICENSE](latex/KATEX_LICENSE)），附带的 KaTeX 字体采用 SIL Open Font License。头图背景是伊萨克·列维坦的《晚钟》（1892），属于公有领域。
+BetterText 以 [MIT 许可证](LICENSE) 发布。`:latex` 移植自的 KaTeX 代码同样采用 MIT 许可证（见 [latex/KATEX_LICENSE](latex/KATEX_LICENSE)），其中的 mhchem 扩展（移植在 `latex/.../contrib`）采用 Apache License 2.0；附带的 KaTeX 字体采用 SIL Open Font License。头图背景是伊萨克·列维坦的《晚钟》（1892），属于公有领域。

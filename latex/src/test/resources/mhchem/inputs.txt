@@ -1,0 +1,147 @@
+# One case per line: "<state machine><TAB><input>". The state machine is ce or pu.
+# tools/mhchem-fixtures.js runs KaTeX's contrib/mhchem over these and writes fixtures.json.
+ce	CO2 + C -> 2 CO
+ce	Hg^2+ ->[I-] HgI2 ->[I-] [Hg^{II}I4]^2-
+ce	H2O
+ce	Sb2O3
+ce	H+
+ce	CrO4^2-
+ce	[AgCl2]-
+ce	Y^99+
+ce	Y^{99+}
+ce	2 H2O
+ce	2H2O
+ce	0.5 H2O
+ce	1/2 H2O
+ce	(1/2) H2O
+ce	$n$ H2O
+ce	^{227}_{90}Th+
+ce	^227_90Th+
+ce	^{0}_{-1}n^{-}
+ce	^0_-1n-
+ce	H{}^3HO
+ce	H^3HO
+ce	x Na(NH4)HPO4 ->[\Delta] (NaPO3)_x + x NH3 ^ + x H2O
+ce	$x$ Na(NH4)HPO4
+ce	NO3-
+ce	(NH4)2S
+ce	Fe(CN)6^3-
+ce	KCr(SO4)2*12H2O
+ce	KCr(SO4)2.12H2O
+ce	KCr(SO4)2 * 12 H2O
+ce	Fe^{II}Fe^{III}2O4
+ce	Fe^{0}
+ce	Fe^{+III}
+ce	OCO^{.-}
+ce	NO^{(2.)-}
+ce	A -> B
+ce	A <- B
+ce	A <-> B
+ce	A <--> B
+ce	A <=> B
+ce	A <=>> B
+ce	A <<=> B
+ce	A ->[H2O] B
+ce	A ->[{text above}][{text below}] B
+ce	A ->[$x$][$x_i$] B
+ce	A + B
+ce	A - B
+ce	A = B
+ce	A \pm B
+ce	SO4^2- + Ba^2+ -> BaSO4 v
+ce	A v B (v) -> B ^ B (^)
+ce	NaOH(aq,$\infty$)
+ce	H2O(l)
+ce	ZnCl2(aq)
+ce	Zn^2+ <=>[+ 2OH-][+ 2H+] $\underset{\text{amphoteres Hydroxid}}{\ce{Zn(OH)2 v}}$ <=>[+ 2OH-][+ 2H+] $\underset{\text{Hydroxozikat}}{\ce{[Zn(OH)4]^2-}}$
+ce	Hg^2+ ->[I-] $\underset{\mathrm{red}}{\ce{HgI2}}$ ->[I-] $\underset{\mathrm{red}}{\ce{[Hg^{II}I4]^2-}}$
+ce	A-B=C#D
+ce	A\bond{-}B\bond{=}C\bond{#}D
+ce	A\bond{1}B\bond{2}C\bond{3}D
+ce	A\bond{~}B\bond{~-}C
+ce	A\bond{~--}B\bond{~=}C\bond{-~-}D
+ce	A\bond{...}B\bond{....}C
+ce	A\bond{->}B\bond{<-}C
+ce	CH4 + 2 $\left( \ce{O2 + 79/21 N2} \right)$
+ce	\mu-Cl
+ce	2\,{}^{14}C
+ce	H2(aq) + S(s)
+ce	CuSO4 . 5 H2O
+ce	Na+ + Cl- -> NaCl
+ce	NaCl(s) -> Na+(aq) + Cl-(aq)
+ce	\alpha-NaOH
+ce	Ca(OH)2 v
+ce	NaOH + HCl -> NaCl + H2O
+ce	H3O+
+ce	OH-
+ce	Mg2+
+ce	Mg^2+
+ce	SO4^2-
+ce	e-
+ce	e^-
+ce	CH3CH2OH
+ce	CH3-CH2-OH
+ce	CH2=CH2
+ce	HC#CH
+ce	C6H5-CHO
+ce	X_{i}^{x}
+ce	X_i^x
+ce	NH4^+
+ce	O2^{-}
+ce	P4O10
+ce	Fe2O3 + 3 C -> 2 Fe + 3 CO
+ce	2H2 + O2 -> 2H2O
+ce	CH4 + 2O2 -> CO2 + 2H2O
+ce	N2 + 3H2 <=> 2NH3
+ce	CaCO3 ->[高温] CaO + CO2 ^
+ce	CaCO3 ->[\Delta] CaO + CO2 ^
+ce	A + B ->[catalyst] C
+ce	Cu^{2+} + 2e^- -> Cu
+ce	{}^{12}_{6}C
+ce	^{14}C
+ce	NH3 + H2O <=> NH4+ + OH-
+ce	2 Na + Cl2 -> 2 NaCl
+ce	C6H12O6 + 6 O2 -> 6 CO2 + 6 H2O
+ce	Ba^2+ + SO4^2- -> BaSO4(s)
+ce	A ->[\text{light}] B
+ce	A ->[{}][\text{below}] B
+ce	A <=>[\text{cat.}] B
+ce	\frac{1}{2} H2O
+ce	\color{red}{H2O}
+ce	H2O \text{ and } CO2
+ce	1s^2 2s^2 2p^6
+ce	3 H2O(g)
+ce	(CH3)3C-OH
+ce	[Cu(NH3)4]^2+
+ce	Fe^3+ + 3 SCN- <=> Fe(SCN)3
+ce	CH3COOH <=> CH3COO- + H+
+ce	K_{a} = 1.8 \times 10^{-5}
+ce	A ->T B
+ce	pH
+ce	NaCl, KCl
+ce	a+b-c
+ce	A->B
+ce	A + _{x}B
+ce	A\bond{x}B
+ce	A ->[$\frac{1}{2}$] B
+ce	123
+ce	-
+ce	+
+pu	123 kJ
+pu	123 mm2
+pu	0.01 \mu{}g
+pu	1e-3 mol
+pu	1.2e3 kJ/mol
+pu	1,2 kJ
+pu	12 m/s^2
+pu	8.314 J K^-1 mol^-1
+pu	6.022 * 10^23 mol^-1
+pu	1.2x10^3 kJ
+pu	37 \degree C
+pu	-5 °C
+pu	123 kJ/mol
+pu	123 kJ//mol
+pu	10 \ohm
+pu	1 m/s
+pu	3.14159
+pu	1 234 567 m

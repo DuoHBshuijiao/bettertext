@@ -21,6 +21,12 @@ android {
     buildFeatures {
         compose = true
     }
+    // The device tests read the mhchem fixtures too: Android's regex engine (ICU) differs from the JVM's.
+    sourceSets {
+        getByName("androidTest") {
+            resources.directories.add("src/test/resources")
+        }
+    }
 }
 
 dependencies {
@@ -31,4 +37,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.test.runner)
 }
