@@ -56,6 +56,15 @@ val components = MarkdownComponents(
 )
 ```
 
+## Usage
+
+The [wiki](https://github.com/re-ovo/bettertext/wiki) has a guide for each module:
+
+- [BetterText](https://github.com/re-ovo/bettertext/wiki/BetterText): styled text, links, inline items and selection across texts and lazy lists.
+- [LaTeX](https://github.com/re-ovo/bettertext/wiki/LaTeX): standalone and display formulas, inline formulas in `BetterText`, settings, macros and chemistry.
+- [Markdown](https://github.com/re-ovo/bettertext/wiki/Markdown): theming, registering components, streaming and parsing ahead of time.
+- [Highlight](https://github.com/re-ovo/bettertext/wiki/Highlight): highlighting code, color palettes and supported languages.
+
 ## Compose limitations
 
 Two open Compose issues prevent the text layer from building on `BasicText` and `SelectionContainer`:
