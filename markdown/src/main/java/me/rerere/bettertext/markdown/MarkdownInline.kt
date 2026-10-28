@@ -59,8 +59,16 @@ internal fun ProvideMarkdownTextStyle(style: TextStyle, content: @Composable () 
 
 /** Renders inline nodes as one [BetterText]. */
 @Composable
-internal fun InlineText(content: List<MarkdownInline>, modifier: Modifier = Modifier) {
+internal fun InlineText(
+    content: List<MarkdownInline>,
+    modifier: Modifier = Modifier,
+    path: String = "${LocalMarkdownBlockPath.current}/text/0",
+) {
     val context = LocalMarkdownContext.current
+    context.components.inlineText?.let { renderer ->
+        renderer(content, modifier, path)
+        return
+    }
     val style = LocalMarkdownTextStyle.current
     val density = LocalDensity.current
     val contentColor = style.color.takeOrElse { Color.Black }

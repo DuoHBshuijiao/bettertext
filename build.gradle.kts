@@ -12,7 +12,7 @@ plugins {
 // coordinates JitPack serves them under; :bom publishes itself. JitPack sets VERSION to the tag or
 // commit it builds.
 subprojects {
-    group = "com.github.re-ovo.bettertext"
+    group = "com.github.DuoHBshuijiao.bettertext"
     version = System.getenv("VERSION") ?: "dev"
 
     pluginManager.withPlugin("com.android.library") {

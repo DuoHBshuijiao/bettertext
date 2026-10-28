@@ -56,6 +56,8 @@ internal class PreparedText(
     /** Composable inline items in text order, with their offsets in [spanned]. */
     val composables: List<ComposableSpan>,
     val composableOffsets: IntArray,
+    val inputOffsets: IntArray,
+    val inputEndOffsets: IntArray,
 ) {
     companion object {
         fun create(
@@ -150,6 +152,8 @@ internal class PreparedText(
                 links,
                 composables,
                 composableOffsets.toIntArray(),
+                expanded.offsets,
+                expanded.endOffsets,
             )
         }
 

@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,18 +50,24 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import me.rerere.bettertext.text.BetterText
 
+/** Address of the current block; components can provide child addresses for table cells. */
+val LocalMarkdownBlockPath = staticCompositionLocalOf { "" }
+
 @Composable
 internal fun MarkdownBlocks(
     blocks: List<MarkdownBlock>,
     modifier: Modifier = Modifier,
     spacing: Dp = LocalMarkdownContext.current.theme.blockSpacing,
+    path: String = LocalMarkdownBlockPath.current,
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(spacing),
     ) {
         blocks.fastForEachIndexed { index, block ->
-            MarkdownBlockNode(block = block, first = index == 0)
+            CompositionLocalProvider(LocalMarkdownBlockPath provides "$path/$index") {
+                MarkdownBlockNode(block = block, first = index == 0)
+            }
         }
     }
 }
@@ -134,9 +141,9 @@ private fun InlineContent(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             itemVerticalAlignment = Alignment.CenterVertically,
         ) {
-            segments.fastForEach { segment ->
+            segments.fastForEachIndexed { index, segment ->
                 when (segment) {
-                    is InlineSegment.Text -> InlineText(segment.content)
+                    is InlineSegment.Text -> InlineText(segment.content, path = "${LocalMarkdownBlockPath.current}/text/$index")
                     is InlineSegment.Image -> ImageSegment(segment.image, segment.link)
                     is InlineSegment.Math -> Box(Modifier.fillMaxWidth()) { MathBlock(segment.formula) }
                 }
@@ -263,6 +270,7 @@ private fun ListBlock(block: MarkdownBlock.ListBlock) {
                         blocks = item.children,
                         modifier = Modifier.weight(1f, fill = false),
                         spacing = spacing,
+                        path = "${LocalMarkdownBlockPath.current}/item/$index",
                     )
                 }
             }
@@ -317,7 +325,9 @@ private fun DetailsBlock(block: MarkdownBlock.Details) {
     val theme = LocalMarkdownContext.current.theme
     val component = LocalMarkdownContext.current.components.details
     val summary: @Composable () -> Unit = {
-        ProvideMarkdownTextStyle(TextStyle(fontWeight = FontWeight.Medium)) { InlineText(block.summary) }
+        ProvideMarkdownTextStyle(TextStyle(fontWeight = FontWeight.Medium)) {
+            InlineText(block.summary, path = "${LocalMarkdownBlockPath.current}/summary")
+        }
     }
     val content: @Composable () -> Unit = { MarkdownBlocks(block.children) }
     if (component != null) {

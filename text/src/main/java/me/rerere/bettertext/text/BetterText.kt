@@ -59,6 +59,19 @@ fun BetterText(
     inlineContent: Map<String, BetterInline> = emptyMap(),
     maxLines: Int = Int.MAX_VALUE,
 ) {
+    BetterText(text, modifier, style, inlineContent, maxLines, onTextLayout = null)
+}
+
+/** Like [BetterText], with geometry addressed by offsets in the input text. */
+@Composable
+fun BetterText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    style: TextStyle = TextStyle.Default,
+    inlineContent: Map<String, BetterInline> = emptyMap(),
+    maxLines: Int = Int.MAX_VALUE,
+    onTextLayout: ((BetterTextLayoutResult) -> Unit)?,
+) {
     require(maxLines > 0) { "maxLines must be positive" }
     val density = LocalDensity.current
     val fontFamilyResolver = LocalFontFamilyResolver.current
@@ -143,6 +156,9 @@ fun BetterText(
         val maxWidth = if (constraints.hasBoundedWidth) constraints.maxWidth else Int.MAX_VALUE
         val layout = cache.layout(constraints.minWidth, maxWidth, maxLines)
         holder.layout = layout
+        if (onTextLayout != null) {
+            onTextLayout(BetterTextLayoutResult(text, layout, prepared.inputOffsets, prepared.inputEndOffsets))
+        }
         if (selectable != null && (selectable.layout !== layout || selectable.prepared !== prepared)) {
             selectable.prepared = prepared
             selectable.layout = layout
@@ -175,6 +191,18 @@ fun BetterText(
     maxLines: Int = Int.MAX_VALUE,
 ) {
     BetterText(remember(text) { AnnotatedString(text) }, modifier, style, maxLines = maxLines)
+}
+
+/** Plain-text overload with layout geometry. */
+@Composable
+fun BetterText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = TextStyle.Default,
+    maxLines: Int = Int.MAX_VALUE,
+    onTextLayout: ((BetterTextLayoutResult) -> Unit)?,
+) {
+    BetterText(remember(text) { AnnotatedString(text) }, modifier, style, maxLines = maxLines, onTextLayout = onTextLayout)
 }
 
 /** Calls the link's listener, or opens a URL link with [uriHandler] when it has none. */

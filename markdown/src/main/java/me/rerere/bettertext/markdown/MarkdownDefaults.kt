@@ -3,6 +3,7 @@ package me.rerere.bettertext.markdown
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -96,6 +97,11 @@ class MarkdownComponents(
      * Called for each run of plain text; offsets are in that run.
      */
     val textDecorations: (MarkdownInlineScope.(text: String) -> List<InlineDecoration>)? = null,
+    /**
+     * Optional text renderer. [path] is stable across line wrapping and font changes.
+     * The current style is available from [LocalMarkdownTextStyle].
+     */
+    val inlineText: (@Composable (content: List<MarkdownInline>, modifier: Modifier, path: String) -> Unit)? = null,
 )
 
 object MarkdownDefaults {
