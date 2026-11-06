@@ -47,6 +47,15 @@ class MarkdownParserTest {
     }
 
     @Test
+    fun `single tildes strike through even as the first delimiter`() {
+        for (source in listOf("~abc~", "abc~abc~", "~abc~**", "*abc~abc~")) {
+            val strike = single<Paragraph>(source).content.filterIsInstance<Styled>().single()
+            assertEquals(source, TextDecoration.LineThrough, strike.style.textDecoration)
+            assertEquals(source, listOf(Text("abc")), strike.children)
+        }
+    }
+
+    @Test
     fun `soft break follows the option`() {
         val source = """
             first
