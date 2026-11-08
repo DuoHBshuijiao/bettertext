@@ -56,6 +56,15 @@ val components = MarkdownComponents(
 )
 ```
 
+## 用法
+
+[Wiki](https://github.com/re-ovo/bettertext/wiki)（英文）为每个模块提供了使用指南：
+
+- [BetterText](https://github.com/re-ovo/bettertext/wiki/BetterText)：带样式的文本、链接、内联项，以及跨文本和懒加载列表的选择。
+- [LaTeX](https://github.com/re-ovo/bettertext/wiki/LaTeX)：独立公式和行间公式、`BetterText` 中的内联公式、设置、宏和化学方程式。
+- [Markdown](https://github.com/re-ovo/bettertext/wiki/Markdown)：主题、注册组件、流式渲染和提前解析。
+- [Highlight](https://github.com/re-ovo/bettertext/wiki/Highlight)：代码高亮、配色方案和支持的语言。
+
 ## Compose 的限制
 
 Compose 有两个尚未解决的问题，导致文字层没法基于 `BasicText` 和 `SelectionContainer` 实现：

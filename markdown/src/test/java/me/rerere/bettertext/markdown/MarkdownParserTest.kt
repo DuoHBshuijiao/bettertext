@@ -47,6 +47,24 @@ class MarkdownParserTest {
     }
 
     @Test
+    fun `single tildes strike through even as the first delimiter`() {
+        for (source in listOf("~abc~", "abc~abc~", "~abc~**", "*abc~abc~")) {
+            val strike = single<Paragraph>(source).content.filterIsInstance<Styled>().single()
+            assertEquals(source, TextDecoration.LineThrough, strike.style.textDecoration)
+            assertEquals(source, listOf(Text("abc")), strike.children)
+        }
+    }
+
+    @Test
+    fun `inline math touching punctuation or CJK text`() {
+        val bold = single<Paragraph>("选 **B：\\(\\eta\\)**。").content.filterIsInstance<Styled>().single()
+        assertEquals(listOf(Text("B："), Math("\\eta", display = false)), bold.children)
+        for (source in listOf("(\$x\$)", "设\$x\$为", "：\$x\$")) {
+            assertEquals(source, Math("x", display = false), single<Paragraph>(source).content.filterIsInstance<Math>().single())
+        }
+    }
+
+    @Test
     fun `soft break follows the option`() {
         val source = """
             first
