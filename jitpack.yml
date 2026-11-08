@@ -5,4 +5,5 @@ before_install:
   - sdk install java $JDK
   - sdk use java $JDK
 install:
+  - sed -i 's|services.gradle.org/distributions|mirrors.huaweicloud.com/gradle|; s|networkTimeout=10000|networkTimeout=60000|' gradle/wrapper/gradle-wrapper.properties
   - ./gradlew :latex:publishToMavenLocal :text:publishToMavenLocal :markdown:publishToMavenLocal :highlight:publishToMavenLocal :bom:publishToMavenLocal
